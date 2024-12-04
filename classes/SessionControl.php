@@ -22,16 +22,22 @@ class SessionControl {
     /**
      * Deletes the uploaded and processed files and clears the session.
      */
-    public function clearSession()
+    public function clearSession(): void
     {
         if (!empty($_SESSION['uploadFile'])) {
-            unlink($_SESSION['uploadFile']);
+            if (file_exists($_SESSION['uploadFile'])) {
+                unlink($_SESSION['uploadFile']);
+            }
         }
         if (!empty($_SESSION['processedFile'])) {
-            unlink($_SESSION['processedFile']);
+            if (file_exists($_SESSION['processedFile'])) {
+                unlink($_SESSION['processedFile']);
+            }
         }
         if (!empty($_SESSION['xmpFile'])) {
-            unlink($_SESSION['xmpFile']);
+            if (file_exists($_SESSION['xmpFile'])) {
+                unlink($_SESSION['xmpFile']);
+            }
         }
         unset($_SESSION['uploadFile']);
         unset($_SESSION['processedFile']);
@@ -41,7 +47,7 @@ class SessionControl {
     /**
      * Destroys the session.
      */
-    public function destroySession() {
+    public function destroySession(): void {
         $this->clearSession();
         session_destroy();
     }
