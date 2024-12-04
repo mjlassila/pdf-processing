@@ -19,7 +19,7 @@
     if (!empty($_FILES)) {
         if (empty($_FILES['fileToUpload']['name'])) {
             $infoMessage = $messages['fileNotChosen'];
-        } elseif (pathinfo($_FILES['fileToUpload']['name'], PATHINFO_EXTENSION) != 'pdf') {
+        } elseif (pathinfo($_FILES['fileToUpload']['name'], PATHINFO_EXTENSION) != 'pdf' || mime_content_type($_FILES['fileToUpload']['tmp_name']) != 'application/pdf') {
             $errorMessage = $messages['uploadNoPdf'];
         } else {
             $newFileName =  $processor->renameFile(basename($_FILES['fileToUpload']['name']), '.pdf');
