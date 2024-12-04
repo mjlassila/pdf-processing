@@ -21,12 +21,12 @@ class PdfProcessing
     /**
      * The array with configurations.
      */
-    var $configs = NULL;
+    private $configs = NULL;
 
     /**
      * The array with messages.
      */
-    var $messages = NULL;
+    private $messages = NULL;
 
     /**
      * Contructor loading the configuration.
@@ -231,7 +231,7 @@ class PdfProcessing
      */
     public function executePdfProcessing ($args)
     {
-        $cmd = $this->configs['pdfProcessor'] . ' ' . $args;
+        $cmd = escapeshellcmd($this->configs['pdfProcessor'] . ' ' . $args);
         return shell_exec($cmd);
     }
     
