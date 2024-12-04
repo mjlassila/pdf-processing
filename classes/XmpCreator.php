@@ -21,12 +21,12 @@ class XmpCreator
     /**
      * The array with xmp configurations.
      */
-    var $xmpConfigs = NULL;
+    private $xmpConfigs = NULL;
     
     /**
      * Contructor loading the configuration.
      */
-    function __construct ($xmpConfigs)
+    public function __construct(array $xmpConfigs)
     {
         $this->xmpConfigs = $xmpConfigs;
     }
@@ -37,7 +37,7 @@ class XmpCreator
      * @param $contentArray
      * @return string
      */
-    public function createXmp($contentArray) 
+    public function createXmp(array $contentArray): string 
     {        
         $dublinCore = "";
         $xmpContent = "";
@@ -53,7 +53,7 @@ class XmpCreator
             switch($key) {
                 case "keywords":
                     $keywordArray = array_filter(explode(';', $value));
-                    $xmpContent .= $this->createPdfKeywords(join(',', $keywordArray)) . "\n";
+                    $xmpContent .= $this->createPdfKeywords(implode(',', $keywordArray)) . "\n";
                     $dublinCore .= $this->createDcSubject($keywordArray) . "\n";
                     break;
                     
@@ -78,7 +78,7 @@ class XmpCreator
      * @param string $content
      * @return string
      */
-    public function createDublinCore($content) 
+    public function createDublinCore(string $content): string 
     {
         return $this->packContent('xmpDublinCore', $content);
     }
@@ -89,7 +89,7 @@ class XmpCreator
      * @param $valueArray
      * @return string
      */
-    public function createDcSubject($valueArray)
+    public function createDcSubject(array $valueArray): string
     {
         $content = $this->createRdfSet('Bag', $valueArray);
         return $this->packDynamicTag('xmpDcTag', 'subject', $content);
@@ -101,7 +101,7 @@ class XmpCreator
      * @param $valueArray
      * @return string
      */
-    public function createDcCreator($valueArray)
+    public function createDcCreator(array $valueArray): string
     {
         $content = $this->createRdfSet('Seq', $valueArray);
         return $this->packDynamicTag('xmpDcTag', 'creator', $content);
@@ -113,7 +113,7 @@ class XmpCreator
      * @param string $commaSeparatedKeywords
      * @return string
      */
-    public function createPdfKeywords($commaSeparatedKeywords) 
+    public function createPdfKeywords(string $commaSeparatedKeywords): string 
     {
         return $this->packContent('xmpPdfKeywords', $commaSeparatedKeywords);
     }
@@ -125,7 +125,7 @@ class XmpCreator
      * @param $valueArray - the values
      * @return string
      */
-    public function createRdfSet($type, $valueArray)
+    public function createRdfSet(string $type, array $valueArray): string
     {
         $xmpString = '';
         
@@ -142,7 +142,7 @@ class XmpCreator
      * @param string $content
      * @return string
      */
-    public function createDcLangTag($content)
+    public function createDcLangTag(string $content): string
     {
         return $this->packContent('xmpAlt', $content);
     }
@@ -154,7 +154,7 @@ class XmpCreator
      * @param string $content   the content
      * @return string
      */
-    private function packContent($config, $content) 
+    private function packContent(string $config, string $content): string 
     {
         return sprintf($this->xmpConfigs[$config], trim($content));
     }
@@ -167,7 +167,7 @@ class XmpCreator
      * @param string $content   the content 
      * @return string
      */
-    private function packDynamicTag($type, $tag, $content) 
+    private function packDynamicTag(string $type, string $tag, string $content): string 
     {
         return sprintf($this->xmpConfigs[$type], $tag, trim($content), $tag);
     }
