@@ -18,7 +18,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-9">
-				<p><?php echo($messages['uploadedFile'] . ' <strong>' . $_SESSION['originalFileName'] . '</strong>')  ?></p>
+				<p><?php echo htmlspecialchars($messages['uploadedFile'], ENT_QUOTES, 'UTF-8') . ' <strong>' . htmlspecialchars($_SESSION['originalFileName'], ENT_QUOTES, 'UTF-8') . '</strong>' ?></p>
 			</div>
 		</div>
 		
@@ -31,7 +31,7 @@
 			</div>
 			<div class="col-sm-3">
 				<input type="submit" class="btn btn-success" name="pdfa_validate"
-						value="<?php echo($messages['validateButton'])?>">
+						value="<?php echo htmlspecialchars($messages['validateButton'], ENT_QUOTES, 'UTF-8') ?>">
 			</div>
 		</div>
 
@@ -49,7 +49,7 @@
 			</div>
 			<div class="col-sm-3">
 				<input type="submit" class="btn btn-info" name="pdfa_convert"
-						value="<?php echo($messages['convertButton'])?>">
+						value="<?php echo htmlspecialchars($messages['convertButton'], ENT_QUOTES, 'UTF-8') ?>">
 			</div>
 		</div>
 
@@ -61,7 +61,7 @@
 			</div>
 			<div class="col-sm-3">
 				<input type="submit" class="btn btn-primary" name="delete_file"
-						value="<?php echo($messages['deleteButton'])?>">
+						value="<?php echo htmlspecialchars($messages['deleteButton'], ENT_QUOTES, 'UTF-8') ?>">
 			</div>
 		</div>
 
