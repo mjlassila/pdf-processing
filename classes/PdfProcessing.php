@@ -59,7 +59,7 @@ class PdfProcessing
     public function saveFile ($file, $saveFileName)
     {
         if (!file_exists($this->configs['uploadPath'])) {
-            mkdir($this->configs['uploadPath']);
+            mkdir($this->configs['uploadPath'], 0755, true);
         }
         
         $targetFile = $this->configs['uploadPath'] . $saveFileName;
@@ -85,7 +85,7 @@ class PdfProcessing
     public function createAndSaveProcessedFileName($fileExt) 
     {
         if (!file_exists($this->configs['processedPath'])) {
-            mkdir($this->configs['processedPath']);
+            mkdir($this->configs['processedPath'], 0755, true);
         }
 
         $_SESSION['processedFile'] = $this->configs['processedPath']
@@ -103,7 +103,7 @@ class PdfProcessing
     public function saveXmpFile($content) 
     {
         if (!file_exists($this->configs['xmpPath'])) {
-            mkdir($this->configs['xmpPath']);
+            mkdir($this->configs['xmpPath'], 0755, true);
         }
         $xmpPath = $this->configs['xmpPath'] . basename($_SESSION['uploadFile'], '.pdf') . '.xmp';
         if (file_put_contents($xmpPath, $content)) {
@@ -231,7 +231,7 @@ class PdfProcessing
      */
     public function executePdfProcessing ($args)
     {
-        $cmd = escapeshellcmd($this->configs['pdfProcessor'] . ' ' . $args);
+        $cmd = escapeshellcmd($this->configs['pdfProcessor']) . ' ' . escapeshellarg($args);
         return shell_exec($cmd);
     }
     
