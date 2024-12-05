@@ -71,11 +71,12 @@
                             <?php if ($lang != 'de') echo '</strong>' ?>
                         </a>
                         <span> | </span>
-                        <a href="<?php echo htmlspecialchars($uri_parts[0], ENT_QUOTES, 'UTF-8') ?>?lang=de">
-                            <?php if ($lang == 'de') echo '<strong>' ?>
-                            De
-                            <?php if ($lang == 'de') echo '</strong>' ?>
+                        <a href="<?php echo htmlspecialchars($uri_parts[0], ENT_QUOTES, 'UTF-8') ?>?lang=fi">
+                            <?php if ($lang == 'fi') echo '<strong>' ?>
+                            Fi
+                            <?php if ($lang == 'fi') echo '</strong>' ?>
                         </a>
+
                     </div>
                 </div>
             </div>
