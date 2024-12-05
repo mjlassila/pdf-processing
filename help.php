@@ -14,8 +14,8 @@
  * Prints a static help page.
  */
 
-include("environment/init.php");
-include("elements/header.php");
+include_once("environment/init.php");
+include_once("elements/header.php");
 
 ?>
 <div class="container helppage">
@@ -69,5 +69,5 @@ include("elements/header.php");
 
 </div>
 <?php
-include("elements/footer.php");
+include_once("elements/footer.php");
 

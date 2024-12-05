@@ -14,12 +14,12 @@
  * Handles the download of the processed file. 
  */    
 
-include("environment/init.php");
+include_once("environment/init.php");
 
 if (empty($_SESSION['processedFile']) || !file_exists($_SESSION['processedFile'])) {
     $errorMessage = $messages['downloadFileNotExists'];
     unset($_SESSION['processedFile']);
-    include("index.php");
+    include_once("index.php");
 } else {
     if (empty($_SESSION['processedDisplayName'])) {
         $_SESSION['processedDisplayName'] = 'processedFile.pdf';
