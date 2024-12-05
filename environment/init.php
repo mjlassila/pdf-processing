@@ -27,10 +27,12 @@ if (isset($_GET['lang'])) {
     $lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
 }
 
-$messagesFile = $lang === 'de' ? "ini/messages_de.ini" : "ini/messages_en.ini";
-$messages = parse_ini_file($messagesFile);
-if (!$messages) {
-    error_log("The messages file $messagesFile could not be loaded!");
+if ($lang == 'de') {
+    $messages = parse_ini_file("ini/messages_de.ini");
+} elseif ($lang == 'fi') {
+    $messages = parse_ini_file("ini/messages_fi.ini");
+} else {
+    $messages = parse_ini_file("ini/messages_en.ini");
 }
 
 $configs = parse_ini_file("ini/config.ini");
