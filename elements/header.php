@@ -13,7 +13,7 @@
 <html>
 	<head>
         <meta charset="utf-8">
-        <title><?php echo($messages['htmlTitle'])?></title>
+        <title><?php echo htmlspecialchars($messages['htmlTitle'], ENT_QUOTES, 'UTF-8') ?></title>
 		
         <base href="<?php echo $configs['baseUrl'] ?>">
 
@@ -42,7 +42,7 @@
                             <a href="<?php echo($messages['logo_link'])?>" target="_blank">
                                 <img src="<?php echo($messages['logo_image'])?>" class="logo"/>
                             </a>
-                            <?php echo($messages['headline'])?>
+                            <?php echo htmlspecialchars($messages['headline'], ENT_QUOTES, 'UTF-8') ?>
                         </h3>
                     </div>
                     <div class="col-sm-3">
@@ -52,9 +52,9 @@
                                 $navigator = explode(",", $nav);
                             ?>
                                 <li class="text-center active">
-                                    <a href="<?php echo $navigator[1] ?>">
-                                        <i class="glyphicon <?php echo $navigator[2] ?>" aria-hidden="true"></i>
-                                        <?php echo $navigator[0] ?>
+                                    <a href="<?php echo htmlspecialchars($navigator[1], ENT_QUOTES, 'UTF-8') ?>">
+                                        <i class="glyphicon <?php echo htmlspecialchars($navigator[2], ENT_QUOTES, 'UTF-8') ?>" aria-hidden="true"></i>
+                                        <?php echo htmlspecialchars($navigator[0], ENT_QUOTES, 'UTF-8') ?>
                                     </a>
                                 </li>
                             <?php } ?>

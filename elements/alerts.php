@@ -17,7 +17,7 @@
 if (!empty($errorMessage)) {
 ?>
 <div class="container">
-	<div class="alert alert-danger"><?php echo($errorMessage) ?></div>
+	<div class="alert alert-danger"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8') ?></div>
 </div>
 
 <?php
@@ -26,7 +26,7 @@ if (!empty($errorMessage)) {
 if (!empty($infoMessage)) {
 ?>
 <div class="container">
-	<div class="alert alert-info"><?php echo($infoMessage) ?></div>
+	<div class="alert alert-info"><?php echo htmlspecialchars($infoMessage, ENT_QUOTES, 'UTF-8') ?></div>
 </div>
 
 <?php

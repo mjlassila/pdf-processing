@@ -17,10 +17,10 @@
 
     <div class="row">
         <div class="col-sm-12">
-        	<p><?php echo $messages['downloadLabel'] ?>
+        	<p><?php echo htmlspecialchars($messages['downloadLabel'], ENT_QUOTES, 'UTF-8') ?>
                 <a href="stream.php" class="btn btn-info btn-lg">
                 	<span class="glyphicon glyphicon-download"></span> 
-                	<?php echo $_SESSION['processedDisplayName'] ?>
+                	<?php echo htmlspecialchars($_SESSION['processedDisplayName'], ENT_QUOTES, 'UTF-8') ?>
                 </a>
 			</p> 
     	</div>

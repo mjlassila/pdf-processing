@@ -23,7 +23,7 @@
     		<p><?php echo htmlspecialchars($messages[$field . 'Label'], ENT_QUOTES, 'UTF-8') ?></p>
     	</div>
     	<div class="col-sm-5">
-    		<input name="<?php echo($field) ?>" type="text" class="form-control" />
+    		<input name="<?php echo htmlspecialchars($field, ENT_QUOTES, 'UTF-8') ?>" type="text" class="form-control" />
     	</div>
     </div>
 <?php } ?>

@@ -23,7 +23,7 @@
 
         <a href="#" class="btn btn-success btn-lg">
           <span class="glyphicon glyphicon-ok-sign"></span>
-          <?php echo($messages['okMessage']) ?>
+          <?php echo htmlspecialchars($messages['okMessage'], ENT_QUOTES, 'UTF-8') ?>
         </a>
 
 <?php
@@ -36,7 +36,7 @@
 
         <a href="#" class="btn btn-danger btn-lg">
           <span class="glyphicon glyphicon-remove-sign"></span> 
-          <?php echo($messages['failMessage']) ?>
+          <?php echo htmlspecialchars($messages['failMessage'], ENT_QUOTES, 'UTF-8') ?>
         </a>
 
 <?php } ?>
@@ -45,7 +45,7 @@
 
     <div class="row top-buffer">
         <div class="col-sm-12">
-        	<p><?php echo($messages['returnValueMessage']) ?></p>
+        	<p><?php echo htmlspecialchars($messages['returnValueMessage'], ENT_QUOTES, 'UTF-8') ?></p>
     	</div>
     </div>
 	<div class="row">

@@ -13,9 +13,9 @@
         <footer class="footer">
             <div class="container">
                 <div class="text-center">
-                    <a href="<?php echo($messages['contact_link']) ?>" target="_blank"><?php echo($messages['contact']) ?></a> |
-                    <a href="<?php echo($messages['imprint_link']) ?>" target="_blank"><?php echo($messages['imprint']) ?></a> |
-                    <a href="<?php echo($messages['privacy_link']) ?>" target="_blank"><?php echo($messages['privacy']) ?></a>
+                    <a href="<?php echo htmlspecialchars($messages['contact_link'], ENT_QUOTES, 'UTF-8') ?>" target="_blank"><?php echo htmlspecialchars($messages['contact'], ENT_QUOTES, 'UTF-8') ?></a> |
+                    <a href="<?php echo htmlspecialchars($messages['imprint_link'], ENT_QUOTES, 'UTF-8') ?>" target="_blank"><?php echo htmlspecialchars($messages['imprint'], ENT_QUOTES, 'UTF-8') ?></a> |
+                    <a href="<?php echo htmlspecialchars($messages['privacy_link'], ENT_QUOTES, 'UTF-8') ?>" target="_blank"><?php echo htmlspecialchars($messages['privacy'], ENT_QUOTES, 'UTF-8') ?></a>
                 </div>
             </div>
         </footer>
