@@ -18,25 +18,29 @@ session_start();
 header('Content-Type: text/html; charset=utf-8');
 
 if (isset($_GET['lang'])) {
-    $lang = $_GET['lang'];
+    $lang = filter_input(INPUT_GET, 'lang', FILTER_SANITIZE_STRING);
     $_SESSION['lang'] = $lang;
-} else if (isset($_SESSION['lang'])){
+    session_regenerate_id(true);
+} else if (isset($_SESSION['lang'])) {
     $lang = $_SESSION['lang'];
 } else {
     $lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
 }
 
-if ($lang == 'de') {
-    $messages = parse_ini_file("ini/messages_de.ini");
-} else {
-    $messages = parse_ini_file("ini/messages_en.ini");
+$messagesFile = $lang === 'de' ? "ini/messages_de.ini" : "ini/messages_en.ini";
+$messages = parse_ini_file($messagesFile);
+if (!$messages) {
+    error_log("The messages file $messagesFile could not be loaded!");
 }
 
 $configs = parse_ini_file("ini/config.ini");
-$xmpConfigs = parse_ini_file("ini/xmp_fragments.ini");
-
 if (!$configs) {
     error_log('The configuration file ini/config.ini could not be loaded!');
+}
+
+$xmpConfigs = parse_ini_file("ini/xmp_fragments.ini");
+if (!$xmpConfigs) {
+    error_log('The XMP configuration file ini/xmp_fragments.ini could not be loaded!');
 }
 
 // Class initialization
