@@ -20,17 +20,17 @@
  * @param $id - the id of the select element.
  * @param $messageArray - an array of options.
  */
-function createSelectBox($id, $messageArray) 
+function createSelectBox(string $id, array $messageArray): void 
 {
-    echo ('<select name="' . $id . '" class="selectpicker">');
-    while (list ($key, $val) = each($messageArray)) {
+    echo '<select name="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '" class="selectpicker">';
+    foreach ($messageArray as $key => $val) {
         $explodedVal = explode(',', $val);
-        $value = $explodedVal[0];
+        $value = htmlspecialchars($explodedVal[0], ENT_QUOTES, 'UTF-8');
         
         if (count($explodedVal) > 1) {
-            $text = $explodedVal[1];            
+            $text = htmlspecialchars($explodedVal[1], ENT_QUOTES, 'UTF-8');            
         } else {
-            $text = $explodedVal[0];
+            $text = $value;
         }
 
         $selected = "";
@@ -38,8 +38,8 @@ function createSelectBox($id, $messageArray)
             $selected = " selected";
         }
 
-        echo ('<option value="' . $value . '"' . $selected . '>' . $text . '</option>');
+        echo '<option value="' . $value . '"' . $selected . '>' . $text . '</option>';
     }
-    echo ('</select>');
+    echo '</select>';
 }
 
