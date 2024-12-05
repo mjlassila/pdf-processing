@@ -1,0 +1,129 @@
+; (c) 2017 Technische Universität Berlin
+; (c) 2024 Tampere University
+;
+; This software is licensed under GNU General Public License version 3 or later.
+;
+; For the full copyright and license information, 
+; please see https://www.gnu.org/licenses/gpl-3.0.html or read 
+; the LICENSE.txt file that was distributed with this source code.
+
+htmlTitle = PDF/A-muunnos
+headline = PDF/A:n validointi ja muunnos
+
+navButton[] = Etusivu,,glyphicon-home
+navButton[] = Ohje,help.php,glyphicon-question-sign
+navButton[] = Kirjaudu ulos,/Shibboleth.sso/Logout,glyphicon-log-out
+
+selectFile = Valitse ladattava PDF-tiedosto:
+uploadFile = Lataa
+browse = Selaa
+
+uploadedFile = Olet ladannut seuraavan tiedoston:
+processComment = Valitse käsittelytyyppi.
+deleteMessage = Kun olet käsitellyt tiedoston, poista se palvelimelta.
+deleteButton = Poista
+downloadLabel = Voit nyt ladata tiedoston
+pdfaValidateMessage = Validoi PDF/A-muotoon:
+pdfaConvertMessage = Muunna PDF/A-muotoon:
+pdfaMetadataMessage = "Valinnainen - muunnoksessa lisättävä metadata (korvaa olemassa olevan metadatan):"
+
+failMessage = Virhe
+okMessage = OK
+
+validateButton = Validointi
+convertButton = Muunna
+
+creatorLabel = "Tekijä(t), eroteltuna ';' merkillä"
+titleLabel = Otsikko
+keywordsLabel = "Avainsanat eroteltuna ';' merkillä"
+descriptionLabel = Kuvaus
+
+pdfaProcessType[] = --analyze,Validate
+pdfaProcessType[] = ,Convert
+
+pdfaLevel[] = 1b
+pdfaLevel[] = 1a
+pdfaLevel[] = 2b
+pdfaLevel[] = 2a
+pdfaLevel[] = 3b
+pdfaLevel[] = 3a
+pdfaLevel[] = 3u
+
+pdfaModus[] = ,Normal 
+pdfaModus[] = --forceconversion_reconvert,Reconversion
+pdfaModus[] = --forceconversion_pagestoimages,Pages to images
+pdfaModus[] = --forceconversion_doctoimages,Docs to images
+
+
+fileNotChosen = Sinun on valittava PDF-tiedosto.
+fileNotSaved = Tapahtui virhe: ladattua tiedostoa ei voitu tallentaa. Yritä uudelleen.
+xmpFileNotSaved = Tapahtui virhe: metadataa sisältävää tiedostoa ei voitu tallentaa, metadataa ei lisätty PDF-dokumenttiin.
+fileNotFound = Tapahtui virhe: ladattu tiedosto puuttuu. Yritä uudelleen.
+fileAlreadyExists = Tapahtui virhe: tiedosto on jo olemassa. Yritä uudelleen.
+fileDeletedMessage = "Tiedosto poistettiin."
+returnValueMessage = Yksityiskohdat:
+uploadNoPdf = Voit ladata vain PDF-tiedostoja.
+downloadFileNotExists = Tapahtui virhe: tiedosto puuttuu.
+
+imprint = Tietoa palvelusta
+contact = Ota yhteyttä
+privacy = Tietosuojaseloste
+
+imprint_link = https://www.tu-berlin.de/servicemenue/impressum/
+contact_link = http://www.szf.tu-berlin.de/servicemenue/kontakt/
+privacy_link = https://www.tu-berlin.de/allgemeine_seiten/datenschutz/parameter/en/
+logo_link = https://www.tu-berlin.de/
+logo_image = images/tu_logo_3.png
+
+helpHeadline = "PDF/A-validointi- ja muunnostyökalu, TU Berlin"
+helpIntro = "TU Berlinin PDF/A-validointi- ja muunnospalvelu käyttää pdfaPilot-ohjelmistoa, jonka on kehittänyt 
+<a href="https://www.callassoftware.com/" target="_blank">callas software</a><br/>
+Tällä työkalulla voit testata, onko PDF/A-tiedostosi validi, tai muuntaa PDF-tiedoston PDF/A-muotoon pitkäaikaista arkistointia varten.<br/>
+Muita tiedostomuotoja (Microsoft Word, LaTeX, OpenOffice jne.) ei voida muuntaa tällä työkalulla.<br/>"
+
+helpIntro1 = "Validointia varten lataa PDF/A-tiedosto."
+helpIntro2 = "Muunnosta varten lataa PDF-tiedosto."
+
+helpIntroAlert = "Tiedoston koosta riippuen lataus voi kestää muutaman sekunnin."
+
+helpPdfaLevelsHeadline = "PDF/A-standardit ja tasot"
+helpPdfaLevelsIntro = "<strong>Pitkäaikaista arkistointia varten suosittelemme PDF/A-1b- tai PDF/A-2b-standardia 
+(muunnostasolla \"Normaali\").</strong>"
+
+helpPdfaLevelsSubheader1 = Standardit
+helpPdfaLevelsSubsection1 = "PDF/A-1 &ndash; Perustuu PDF 1.4:ään, tämä on perusversio.<br/>
+PDF/A-2 &ndash; Perustuu PDF 1.7:ään, mahdollistaa läpinäkyvien elementtien upottamisen.<br/>
+PDF/A-3 &ndash; Perustuu PDF 1.7:ään, mahdollistaa minkä tahansa tiedoston upottamisen. Ei suositella pitkäaikaista arkistointia varten."
+
+helpPdfaLevelsSubheader2 = Tasot
+helpPdfaLevelsSubsection2 = "b &ndash; \"perustaso\". Takuulla ainakin dokumentin visuaalinen ulkoasu säilyy, ja useimmissa tapauksissa tekstin hakukelpoisuus säilyy myös. <strong>Tätä tasoa suositellaan.</strong><br/>
+a &ndash; \"saavutettava\". Lisäksi määrittelee dokumentin hierarkkisen rakenteen. Jos rakenne ei ole alkuperäisessä PDF-tiedostossa, se ei tule automaattisesti esiin muunnoksessa. Takuulla tekstin hakukelpoisuuden.<br/>
+u &ndash; \"unicode\". Tasojen b ja a välimuoto. Helpottaa tekstin hakukelpoisuutta."
+
+helpPdfaLevelsLinkAnchor = "Lisätietoja arkistointikelpoisten PDF-tiedostojen luomisesta"
+helpPdfaLevelsLink = "https://www.callassoftware.com/en/creating-archive-ready-pdf-files"
+
+helpValidationHeadline = Validointi
+helpValidationIntro = "PDF/A-dokumentin validointia varten sinun on tiedettävä, minkä standardin ja tason mukaisesti dokumentti on luotu. Valitse tämä yhdistelmä ja napsauta \"Validointi\"."
+
+helpValidationSuccess = "Jos validointi onnistui, näytetään seuraava viesti."
+helpValidationFailure = "Jos validointi epäonnistui, tiedosto ei ole valittu standardin ja tason mukainen. Jos et tiedä tiedostosi standardia ja tasoa, voit kokeilla toista asetusta. Muussa tapauksessa käytä muunnostoimintoa tiedoston muuntamiseksi haluttuun PDF/A-muotoon."
+
+helpConversionHeadline = Muunnos
+helpConversionIntro = "Muunnos voidaan suorittaa mille tahansa PDF-tiedostolle. Valitse haluamasi standardi ja taso (katso yllä). Jos et ole varma, mitä standardia ja tasoa valita, kokeile ensin 1b:tä. Jos tämä ei toimi, tiedostossasi saattaa olla läpinäkyviä elementtejä, jolloin kokeile 2b:tä. Muut standardit ja tasot tulisi valita vain poikkeustapauksissa."
+
+helpConversionAlert = "Tiedoston koosta riippuen muunnos voi kestää muutaman sekunnin."
+
+helpConversionSubheader1 = Muunnostasot
+helpConversionSubsection1 = "Normaali &ndash; Muunnos suoritetaan suoraan PDF-tiedostolle ilman välivaiheita.<br/>
+Uudelleenkonversio &ndash; Suorittaa PDF:n uudelleenkonversion PostScriptin kautta.<br/>
+Sivut kuvina &ndash; Muuntaa ongelmalliset sivut kuviksi, samalla kun teksti muutetaan näkymättömäksi tekstiksi, joka on sijoitettu oikein, jotta teksti pysyy valittavissa ja kopioitavissa.<br/>
+Dokumentit kuvina &ndash; Muuntaa kaikki sivut kuviksi, samalla kun teksti muutetaan näkymättömäksi tekstiksi, joka on sijoitettu oikein, jotta teksti pysyy valittavissa ja kopioitavissa."
+
+helpConversionSubsection1b = "Muunnostasot voidaan ymmärtää muunnoksen voimakkuuden asteina. Korkeampaa tasoa tulisi käyttää vain, jos alempi taso ei ole onnistunut. Mitä korkeampi taso, <strong>sitä tärkeämmäksi tulee tarkistaa muunnetun dokumentin oikeellisuus ja hakukelpoisuus.</strong>"
+
+helpConversionSubheader2 = "Lisämetadata"
+helpConversionSubsection2 = "On mahdollista upottaa lisämetadataa (esim. tekijä, otsikko) PDF/A-dokumenttiin. Tämä metadata kuitenkin korvaa jo olemassa olevan metadatan. Jos lisäät esimerkiksi tekijät, varmista, että kaikki tekijät on eroteltu ';'-merkillä, esim. James Last;Johann Sebastian Bach. Tekijöiden lisääminen ei kuitenkaan korvaa muita metadatatyyppejä, kuten otsikkoa tai avainsanoja. Samalla tavalla voit esimerkiksi lisätä avainsanoja menettämättä nykyistä otsikko- tai tekijämetadataa."
+
+helpConversionSubsection2b = "Jos muunnos onnistui, näet seuraavan näkymän. Voit nyt ladata ja tallentaa muunnetun tiedoston."
+
