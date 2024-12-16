@@ -26,6 +26,7 @@
           <?php echo htmlspecialchars($messages['okMessage'], ENT_QUOTES, 'UTF-8') ?>
         </a>
 
+
 <?php
         // If there is a processed file, offer it to download
         if (!empty($_SESSION['processedFile']) && file_exists($_SESSION['processedFile'])) {
@@ -42,7 +43,7 @@
 <?php } ?>
     	</div>
     </div>
-
+    <?php if(!$configs['simplified_conversion']):?>
     <div class="row top-buffer">
         <div class="col-sm-12">
         	<p><?php echo htmlspecialchars($messages['returnValueMessage'], ENT_QUOTES, 'UTF-8') ?></p>
@@ -53,4 +54,5 @@
 			<pre><?php echo(htmlentities($processingReturnValue))?></pre>
     	</div>
 	</div>
+  <?php endif;?>
 </div> 

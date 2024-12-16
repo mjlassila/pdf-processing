@@ -13,6 +13,13 @@
 /**
  * Form for the pdf processing settings.
  */
+$simplified_conversion = $configs['simplified_conversion'];
+
+if ($simplified_conversion) {
+	$messages['pdfaLevel'] = array("1b");
+	$messages['pdfaModus'] = array(",Vakio");
+}
+
 ?>
 <form method="post" action="index.php">
 	<div class="container">
@@ -21,12 +28,12 @@
 				<p><?php echo htmlspecialchars($messages['uploadedFile'], ENT_QUOTES, 'UTF-8') . ' <strong>' . htmlspecialchars($_SESSION['originalFileName'], ENT_QUOTES, 'UTF-8') . '</strong>' ?></p>
 			</div>
 		</div>
-		
+<?php if (!$simplified_conversion):?>
 		<div class="row top-buffer">
 			<div class="col-sm-3"><?php echo($messages['pdfaValidateMessage']) ?></div>
 			<div class="col-sm-3">
 <?php
-    createSelectBox('pdfa_level', $messages['pdfaLevel']);
+			createSelectBox('pdfa_level', $messages['pdfaLevel']);
 ?>							
 			</div>
 			<div class="col-sm-3">
@@ -34,12 +41,12 @@
 						value="<?php echo htmlspecialchars($messages['validateButton'], ENT_QUOTES, 'UTF-8') ?>">
 			</div>
 		</div>
-
+<?php endif; ?>
 		<div class="row top-buffer">
 			<div class="col-sm-3"><?php echo($messages['pdfaConvertMessage']) ?></div>
 			<div class="col-sm-1">
 <?php
-    createSelectBox('pdfa_convlevel', $messages['pdfaLevel']);
+   createSelectBox('pdfa_convlevel', $messages['pdfaLevel']);
 ?>							
 			</div>
 			<div class="col-sm-2">
