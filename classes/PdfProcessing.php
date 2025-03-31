@@ -43,10 +43,12 @@ class PdfProcessing
      * @param string $filename
      * @return string
      */
-    public function renameFile ($filename, $fileExt)
+    public function renameFile($filename, $fileExt)
     {
-        return hash($this->configs['hash'], $filename . time()) . $fileExt;
+    $cleanExt = preg_replace('/[^a-zA-Z0-9.]/', '', $fileExt);  // Basic sanitization
+    return hash($this->configs['hash'], $filename . time()) . $cleanExt;
     }
+
 
     /**
      * Saves a file and stores the filename and the original name in the
@@ -56,26 +58,39 @@ class PdfProcessing
      * @param string $saveFileName
      * @return boolean
      */
-    public function saveFile ($file, $saveFileName)
+    public function saveFile($file, $saveFileName)
     {
-        if (!file_exists($this->configs['uploadPath'])) {
-            mkdir($this->configs['uploadPath'], 0755, true);
-        }
-        
-        $targetFile = $this->configs['uploadPath'] . $saveFileName;
-        
-        if (file_exists($targetFile)) {
-            $errorMessage = $this->messages['fileAlreadyExists'];
-            
-        } elseif (move_uploaded_file($file['tmp_name'], $targetFile)) {
-            $_SESSION['uploadFile'] = $targetFile;
-            $filename = htmlentities(basename($file['name']));
-            $_SESSION['originalFileName'] = $filename;
-            
-            return TRUE;
-        }
-        return FALSE;
+    if (!file_exists($this->configs['uploadPath'])) {
+        mkdir($this->configs['uploadPath'], 0755, true);
     }
+
+    $targetFile = realpath($this->configs['uploadPath']) . DIRECTORY_SEPARATOR . basename($saveFileName);
+
+    // Security: Check MIME type
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mimeType = $finfo->file($file['tmp_name']);
+    $allowedTypes = ['application/pdf'];  // Whitelist PDF mimetype
+
+    if (!in_array($mimeType, $allowedTypes)) {
+        error_log("Rejected file due to invalid MIME type: $mimeType");
+        return false;
+    }
+
+    // Validate file extension if necessary
+
+    if (file_exists($targetFile)) {
+        error_log("File already exists: $targetFile");
+    } elseif (move_uploaded_file($file['tmp_name'], $targetFile)) {
+        $_SESSION['uploadFile'] = $targetFile;
+        $_SESSION['originalFileName'] = htmlentities(basename($file['name']));
+        return true;
+    }
+
+    return false;
+}
+
+    
+    
 
     /**
      * Creates name and display name of the processed file and saves them to the session.
@@ -133,19 +148,26 @@ class PdfProcessing
      * 
      * @return string[]
      */
-    public function createMetadataArray() 
+    public function createMetadataArray()
     {
-        $metadataArray = array();
-        foreach ($this->configs['metadataField'] as $field) {
-            if (isset($_POST[$field])) {
-                $value = trim($_POST[$field]);
-                if (!empty($field)) {
-                    $metadataArray[$field] = $value;
-                }
+    $metadataArray = [];
+
+    foreach ($this->configs['metadataField'] as $field) {
+        // Only allow alphanumeric fields to prevent injection
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $field)) {
+            continue;
+        }
+
+        if (isset($_POST[$field])) {
+            $value = trim($_POST[$field]);
+            if (!empty($value)) {
+                $metadataArray[$field] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
             }
         }
-        return $metadataArray;
     }
+
+    return $metadataArray;
+}
     
     /**
      * Creates the arguments for PDF/A conversion.
@@ -157,21 +179,27 @@ class PdfProcessing
      */
     public function createPdfaArgs($level, $mode, $lang)
     {
-        $metadata = '';
-        if (!empty($_SESSION['xmpFile'])) {
-            $metadata = $this->configs['metadataArg'] . $_SESSION['xmpFile'] . ' ';
-        }
-        
-        $args = $mode . ' ' . $metadata 
-            . $this->configs['pdfLevelArg'] . $level . ' ' 
-            . $this->configs['pdfOutputArg'] . $_SESSION['processedFile'] . ' ' 
-            . $this->configs['pdfOverwriteArg'] . ' ' 
-            . $this->configs['cachefolderArg'] . ' ' 
-            . $this->configs['pdfLangArg'] . $lang . ' ' 
-            . $_SESSION['uploadFile'];
-        
-        return $args;
+    $args = [];
+
+    if (!empty($mode)) {
+        $args[] = $mode;
     }
+
+    if (!empty($_SESSION['xmpFile'])) {
+        $args[] = $this->configs['metadataArg'] . $_SESSION['xmpFile'];
+    }
+
+    $args[] = $this->configs['pdfLevelArg'] . $level;
+    $args[] = $this->configs['pdfOutputArg'] . $_SESSION['processedFile'];
+    $args[] = $this->configs['pdfOverwriteArg'];
+    $args[] = $this->configs['cachefolderArg'];
+    $args[] = $this->configs['pdfLangArg'] . $lang;
+    $args[] = $_SESSION['uploadFile'];
+
+    // Filter out any accidental empty strings
+    return array_filter($args, fn($v) => trim($v) !== '');
+    }
+
 
     /**
      * Creates the arguments for PDF/A validation.
@@ -229,11 +257,46 @@ class PdfProcessing
      * @param string $args
      * @return string - the pdf processor return value
      */
-    public function executePdfProcessing ($args)
-    {
-        $cmd = escapeshellcmd($this->configs['pdfProcessor']) . ' ' . escapeshellarg($args);
-        return shell_exec($cmd);
+    public function executePdfProcessing($args)
+{
+    $command = array_merge(
+        [$this->configs['pdfProcessor']],
+        $args
+    );
+
+    error_log("Executing: " . implode(' ', array_map('escapeshellarg', $command)));
+
+    $descriptorspec = [
+        0 => ["pipe", "r"],
+        1 => ["pipe", "w"],
+        2 => ["pipe", "w"],
+    ];
+
+    $process = proc_open($command, $descriptorspec, $pipes);
+
+    if (is_resource($process)) {
+        fclose($pipes[0]);
+
+        $stdout = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+
+        $exitCode = proc_close($process);
+
+        if ($exitCode !== 0) {
+            error_log("PDF processor error (code $exitCode): " . trim($stderr));
+        }
+
+        return $stdout;
+    } else {
+        error_log("Failed to start PDF processor");
+        return false;
     }
+}
+
+
     
     /**
      * Returns the pdf profile in the profiles directory.
@@ -266,15 +329,22 @@ class PdfProcessing
      * @param string $mimeType
      * @param string $displayName
      */
-    public function downloadFile($path, $mimeType, $displayName) 
+    public function downloadFile($path, $mimeType, $displayName)
     {
-        $filesize = filesize($path);
-        
-        header("Content-Type: $mimeType");
-        header("Content-Disposition: attachment; filename=$displayName");
-        header("Content-Length: $filesize");
-        
-        readfile($path);
+    if (!file_exists($path) || !is_readable($path)) {
+        error_log("Attempted to download missing or unreadable file: $path");
+        http_response_code(404);
+        exit("File not found");
+    }
+
+    $displayName = basename($displayName);  // Avoid header injection
+    $filesize = filesize($path);
+
+    header("Content-Type: $mimeType");
+    header("Content-Disposition: attachment; filename=\"$displayName\"");
+    header("Content-Length: $filesize");
+
+    readfile($path);
     }
     
 
