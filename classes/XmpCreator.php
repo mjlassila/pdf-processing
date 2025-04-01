@@ -68,7 +68,7 @@ class XmpCreator
             }
         }
         
-        $content = $xmpContent . $this->createDublinCore($dublinCore);
+        $content = $xmpContent  . $this->createIdentification("2") . $this->createDublinCore($dublinCore);
         return $this->packContent('xmp', $content);
     }
     
@@ -81,6 +81,17 @@ class XmpCreator
     public function createDublinCore(string $content): string 
     {
         return $this->packContent('xmpDublinCore', $content);
+    }
+
+    /**
+     * Creates conformance identification block.  
+     * 
+     * @param string $content
+     * @return string
+     */
+    public function createIdentification(string $content): string 
+    {
+        return $this->packContent('xmpIdentification', $content);
     }
     
     /**
