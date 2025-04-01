@@ -284,8 +284,9 @@ class PdfProcessing
         fclose($pipes[2]);
 
         $exitCode = proc_close($process);
-
-        if ($exitCode !== 0) {
+        # All return codes below 100 indicate a successful operation. 
+        # https://hilfe.callassoftware.com/m/pdfapilot/l/652813-results-return-codes-error-codes-reason-codes
+        if ($exitCode > 100) {
             error_log("PDF processor error (code $exitCode): " . trim($stderr));
         }
 
