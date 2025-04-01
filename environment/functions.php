@@ -34,9 +34,9 @@ function createSelectBox(string $id, array $messageArray): void
         }
 
         $selected = "";
-        if ($value == $_POST[$id]) {
-            $selected = " selected";
-        }
+            if (isset($_POST[$id]) && $value == $_POST[$id]) {
+                $selected = " selected";
+            }
 
         echo '<option value="' . $value . '"' . $selected . '>' . $text . '</option>';
     }
