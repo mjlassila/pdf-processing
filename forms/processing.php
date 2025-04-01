@@ -16,7 +16,7 @@
 $simplified_conversion = $configs['simplified_conversion'];
 
 if ($simplified_conversion) {
-	$messages['pdfaLevel'] = array("1b");
+	$messages['pdfaLevel'] = array("2b");
 	$messages['pdfaModus'] = array(",Vakio");
 }
 
