@@ -15,13 +15,15 @@
  */
 ?>
 
-    <div class="row">
-        <div class="col-sm-12">
-        	<p><?php echo htmlspecialchars($messages['downloadLabel'], ENT_QUOTES, 'UTF-8') ?>
-                <a href="stream.php" class="btn btn-info btn-lg">
+    <div class="row top-buffer">
+        <div class="col-sm-6">
+        	<p><?php echo htmlspecialchars($messages['downloadLabel'], ENT_QUOTES, 'UTF-8') ?></p>
+        </div>
+        <div class="col-sm-3">
+                <a href="stream.php" class="btn btn-info">
                 	<span class="glyphicon glyphicon-download"></span> 
-                	<?php echo htmlspecialchars($_SESSION['processedDisplayName'], ENT_QUOTES, 'UTF-8') ?>
+                	<?php echo htmlspecialchars($messages['downloadButton'], ENT_QUOTES, 'UTF-8') ?>
                 </a>
-			</p> 
-    	</div>
+        </div>
+    
     </div>

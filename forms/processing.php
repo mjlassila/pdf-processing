@@ -42,25 +42,25 @@ if ($simplified_conversion) {
 			</div>
 		</div>
 <?php endif; ?>
-		<div class="row top-buffer">
-			<div class="col-sm-3"><?php echo($messages['pdfaConvertMessage']) ?></div>
+
+<?php include 'elements/metadata.php'; ?>
+	<div class="row top-buffer">
+		<div class="col-sm-3"><?php echo($messages['pdfaConvertMessage']) ?></div>
 			<div class="col-sm-1">
-<?php
-   createSelectBox('pdfa_convlevel', $messages['pdfaLevel'], true);
-?>							
+			<?php
+   				createSelectBox('pdfa_convlevel', $messages['pdfaLevel'], true);
+			?>							
 			</div>
 			<div class="col-sm-2">
-<?php
-    createSelectBox('pdfa_mode', $messages['pdfaModus'], true);
-?>							
+		<?php
+    		createSelectBox('pdfa_mode', $messages['pdfaModus'], true);
+		?>							
 			</div>
 			<div class="col-sm-3">
 				<input type="submit" class="btn btn-info" name="pdfa_convert"
 						value="<?php echo htmlspecialchars($messages['convertButton'], ENT_QUOTES, 'UTF-8') ?>">
 			</div>
-		</div>
-
-<?php include 'elements/metadata.php'; ?>
+	</div>
 
 		<div class="row top-buffer">
 			<div class="col-sm-6">
