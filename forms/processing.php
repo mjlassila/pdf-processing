@@ -17,7 +17,7 @@ $simplified_conversion = $configs['simplified_conversion'];
 
 if ($simplified_conversion) {
 	$messages['pdfaLevel'] = array("2b");
-	$messages['pdfaModus'] = array(",Vakio");
+	$messages['pdfaModus'] = array(" ,Vakio");
 }
 
 ?>
@@ -46,12 +46,12 @@ if ($simplified_conversion) {
 			<div class="col-sm-3"><?php echo($messages['pdfaConvertMessage']) ?></div>
 			<div class="col-sm-1">
 <?php
-   createSelectBox('pdfa_convlevel', $messages['pdfaLevel']);
+   createSelectBox('pdfa_convlevel', $messages['pdfaLevel'], true);
 ?>							
 			</div>
 			<div class="col-sm-2">
 <?php
-    createSelectBox('pdfa_mode', $messages['pdfaModus']);
+    createSelectBox('pdfa_mode', $messages['pdfaModus'], true);
 ?>							
 			</div>
 			<div class="col-sm-3">
