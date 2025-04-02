@@ -20,9 +20,14 @@
  * @param $id - the id of the select element.
  * @param $messageArray - an array of options.
  */
-function createSelectBox(string $id, array $messageArray): void 
+function createSelectBox(string $id, array $messageArray, bool $hidden = false): void 
 {
-    echo '<select name="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '" class="selectpicker">';
+    $hide = "";
+    if ($hidden) {
+        $hide = "hidden";
+    }
+
+    echo '<select ' . $hide . ' name="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '" class="selectpicker">';
     foreach ($messageArray as $key => $val) {
         $explodedVal = explode(',', $val);
         $value = htmlspecialchars($explodedVal[0], ENT_QUOTES, 'UTF-8');
