@@ -37,7 +37,7 @@
 		<div class="page-header">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-8">
+                    <div class="col-sm-7">
                         <h3>
                             <a href="<?php echo htmlspecialchars($messages['logo_link'], ENT_QUOTES, 'UTF-8') ?>" target="_blank">
                                 <img src="<?php echo htmlspecialchars($messages['logo_image'], ENT_QUOTES, 'UTF-8') ?>" class="logo"/>
@@ -64,17 +64,17 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-sm-1 lang-selector">
+                    <div class="col-sm-2 lang-selector">
                         <a href="<?php echo htmlspecialchars($uri_parts[0], ENT_QUOTES, 'UTF-8') ?>?lang=en">
-                            <?php if ($lang != 'de') echo '<strong>' ?>
-                            En
-                            <?php if ($lang != 'de') echo '</strong>' ?>
+                            <?php if ($lang === 'en') echo '<strong>' ?>
+                            Englanti
+                            <?php if ($lang === 'en') echo '</strong>' ?>
                         </a>
                         <span> | </span>
                         <a href="<?php echo htmlspecialchars($uri_parts[0], ENT_QUOTES, 'UTF-8') ?>?lang=fi">
-                            <?php if ($lang == 'fi') echo '<strong>' ?>
-                            Fi
-                            <?php if ($lang == 'fi') echo '</strong>' ?>
+                            <?php if ($lang === 'fi') echo '<strong>' ?>
+                            Suomi
+                            <?php if ($lang === 'fi') echo '</strong>' ?>
                         </a>
 
                     </div>

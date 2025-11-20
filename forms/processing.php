@@ -22,7 +22,7 @@ if ($simplified_conversion) {
 
 ?>
 <form method="post" action="index.php">
-	<div class="container">
+        <div class="container content-card">
 		<div class="row">
 			<div class="col-sm-9">
 				<p><?php echo htmlspecialchars($messages['uploadedFile'], ENT_QUOTES, 'UTF-8') . ' <strong>' . htmlspecialchars($_SESSION['originalFileName'], ENT_QUOTES, 'UTF-8') . '</strong>' ?></p>

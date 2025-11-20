@@ -15,7 +15,7 @@
  */
 ?>
 
-<div class="container top-buffer">
+<div class="container content-card top-buffer">
    
     <div class="row">
         <div class="col-sm-12">
