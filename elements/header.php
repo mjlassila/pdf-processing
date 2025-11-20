@@ -30,7 +30,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="images/TU-Logo-favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="any" href="images/favicon.ico">
         
     </head>
 	<body>
