@@ -46,7 +46,12 @@ class PdfProcessing
     public function renameFile($filename, $fileExt)
     {
     $cleanExt = preg_replace('/[^a-zA-Z0-9.]/', '', $fileExt);  // Basic sanitization
-    return hash($this->configs['hash'], $filename . time()) . $cleanExt;
+        $hashAlgo = $this->configs['hash'];
+        if (!is_string($hashAlgo) || !in_array($hashAlgo, hash_algos(), true)) {
+            error_log("Invalid hash algorithm '{$hashAlgo}' configured. Falling back to sha256.");
+            $hashAlgo = 'sha256';
+        }
+        return hash($hashAlgo, $filename . microtime(true)) . $cleanExt;
     }
 
 
