@@ -38,6 +38,8 @@ $level = filter_input(INPUT_POST, 'pdfa_convlevel', FILTER_SANITIZE_STRING) ?? '
 $mode = filter_input(INPUT_POST, 'pdfa_mode', FILTER_SANITIZE_STRING) ?? '';
 
 $processor->createAndSaveProcessedFileName('.pdf');
+$processedFile = $_SESSION['processedFile'] ?? '';
+$processedDisplayName = $_SESSION['processedDisplayName'] ?? '';
 $metadataArray = $processor->createMetadataArray();
 
 if (!empty($metadataArray)) {
@@ -56,8 +58,8 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 $processingReturnValue = $processor->executePdfProcessing($args);
 $processingReturnValue = $processor->filterReturnValue($processingReturnValue);
 
-$conversionOk = $processor->returnOk($processingReturnValue) && !empty($_SESSION['processedFile'])
-    && file_exists($_SESSION['processedFile']);
+$conversionOk = $processor->returnOk($processingReturnValue) && !empty($processedFile)
+    && file_exists($processedFile);
 
 $response['returnValue'] = $processingReturnValue;
 
@@ -65,7 +67,7 @@ if ($conversionOk) {
     $response['status'] = 'success';
     $response['message'] = $messages['conversionSuccess'] ?? ($messages['downloadLabel'] ?? 'Conversion finished.');
     $response['downloadUrl'] = 'stream.php';
-    $response['displayName'] = $_SESSION['processedDisplayName'] ?? basename($_SESSION['processedFile']);
+    $response['displayName'] = $processedDisplayName ?: basename($processedFile);
 } else {
     $response['message'] = $messages['conversionFailed'] ?? ($messages['failMessage'] ?? 'Conversion failed.');
 }
