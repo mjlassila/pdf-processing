@@ -31,7 +31,11 @@ if (empty($_SESSION['uploadFile']) || !file_exists($_SESSION['uploadFile'])) {
     exit;
 }
 
-if (!empty($_SESSION['processedFile']) && file_exists($_SESSION['processedFile'])) {
+if (
+    !empty($_SESSION['conversionFinished'])
+    && !empty($_SESSION['processedFile'])
+    && file_exists($_SESSION['processedFile'])
+) {
     $response['status'] = 'success';
     $response['message'] = $messages['conversionSuccess'] ?? 'Conversion finished.';
     $response['downloadUrl'] = 'stream.php';

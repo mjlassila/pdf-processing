@@ -46,7 +46,7 @@
     };
 
     const renderDownload = (data) => {
-        if (!data || !data.downloadUrl) {
+        if (!data || data.status !== 'success' || !data.downloadUrl) {
             resultBox.innerHTML = '';
             hideBox(resultBox);
             return;
