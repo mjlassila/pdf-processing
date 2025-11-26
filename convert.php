@@ -48,6 +48,11 @@ if (!empty($metadataArray)) {
 }
 
 $args = $processor->createPdfaArgs($level, $mode, $lang);
+# Release the session lock before running the conversion so status requests can
+# check for the result while the processor is running.
+if (session_status() === PHP_SESSION_ACTIVE) {
+    session_write_close();
+}
 $processingReturnValue = $processor->executePdfProcessing($args);
 $processingReturnValue = $processor->filterReturnValue($processingReturnValue);
 

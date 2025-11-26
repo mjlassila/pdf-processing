@@ -73,6 +73,39 @@
         }
     };
 
+    let statusPoller = null;
+
+    const stopPolling = () => {
+        if (statusPoller !== null) {
+            clearInterval(statusPoller);
+            statusPoller = null;
+        }
+    };
+
+    const pollStatus = (successText, failedText) => {
+        if (statusPoller !== null) {
+            return;
+        }
+
+        statusPoller = setInterval(() => {
+            fetch('conversion_status.php', { credentials: 'same-origin' })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.status === 'success') {
+                        setStatus('success', data.message || successText, false);
+                        renderDownload(data);
+                        stopPolling();
+                    } else if (data.status === 'error') {
+                        setStatus('danger', data.message || failedText, false);
+                        stopPolling();
+                    }
+                })
+                .catch(() => {
+                    // Ignore polling errors; the main request will handle failures.
+                });
+        }, 1000);
+    };
+
     convertButton.addEventListener('click', (event) => {
         event.preventDefault();
 
@@ -88,6 +121,8 @@
         hideBox(resultBox);
         hideBox(detailsBox);
 
+        pollStatus(successText, failedText);
+
         fetch('convert.php', {
             method: 'POST',
             body: formData,
@@ -95,6 +130,7 @@
         })
             .then((response) => response.json())
             .then((data) => {
+                stopPolling();
                 if (data.status === 'success') {
                     setStatus('success', data.message || successText, false);
                 } else {
@@ -108,6 +144,7 @@
                 setStatus('danger', failedText, false);
             })
             .finally(() => {
+                stopPolling();
                 convertButton.disabled = false;
             });
     });
