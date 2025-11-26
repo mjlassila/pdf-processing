@@ -53,14 +53,58 @@
         }
 
         const displayName = data.displayName ? ` (${data.displayName})` : '';
+        const downloadName = data.displayName || '';
         resultBox.innerHTML = `
             <div class="alert alert-success">
                 <span class="glyphicon glyphicon-download"></span>
-                <a href="${data.downloadUrl}" class="btn btn-info btn-sm top-buffer">${resultBox.dataset.downloadLabel}</a>
+                <a href="${data.downloadUrl}" class="btn btn-info btn-sm top-buffer" data-download-url="${data.downloadUrl}" data-download-name="${downloadName}">${resultBox.dataset.downloadLabel}</a>
                 <span class="text-info">${resultBox.dataset.readyLabel}${displayName}</span>
             </div>
         `;
         showBox(resultBox);
+    };
+
+    const downloadFile = (downloadUrl, downloadName) => {
+        if (!downloadUrl) {
+            return;
+        }
+
+        const downloadStatusText = resultBox.dataset.downloadingLabel || 'Downloading…';
+        setStatus('info', downloadStatusText, true);
+
+        fetch(downloadUrl, { credentials: 'same-origin' })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Download failed');
+                }
+
+                return response.blob().then((blob) => ({ blob, response }));
+            })
+            .then(({ blob, response }) => {
+                let filename = downloadName;
+                const disposition = response.headers.get('Content-Disposition') || '';
+
+                if (!filename) {
+                    const match = disposition.match(/filename\*?=(?:UTF-8''|\"?)([^;\"]+)/i);
+                    if (match && match[1]) {
+                        filename = decodeURIComponent(match[1].replace(/\"/g, '').trim());
+                    }
+                }
+
+                const objectUrl = URL.createObjectURL(blob);
+                const tempLink = document.createElement('a');
+                tempLink.href = objectUrl;
+                tempLink.download = filename || '';
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                tempLink.remove();
+                URL.revokeObjectURL(objectUrl);
+
+                setStatus('success', statusBox.dataset.success, false);
+            })
+            .catch(() => {
+                setStatus('danger', statusBox.dataset.failed, false);
+            });
     };
 
     const updateDetails = (text) => {
@@ -166,5 +210,16 @@
             .finally(() => {
                 convertButton.disabled = false;
             });
+    });
+
+    resultBox.addEventListener('click', (event) => {
+        const downloadTrigger = event.target.closest('[data-download-url]');
+
+        if (!downloadTrigger) {
+            return;
+        }
+
+        event.preventDefault();
+        downloadFile(downloadTrigger.dataset.downloadUrl, downloadTrigger.dataset.downloadName || '');
     });
 })();
