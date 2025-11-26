@@ -197,3 +197,28 @@ body {
 .text-info {
         color: #3c4f6d;
 }
+
+.conversion-hidden {
+        display: none;
+}
+
+.conversion-spinner {
+        margin-right: 6px;
+        animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+}
+
+#conversion-details {
+        background: #0d1826;
+        color: #e9edf5;
+        border-radius: 8px;
+        border: 1px solid #243447;
+        padding: 12px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        margin-top: 12px;
+}
