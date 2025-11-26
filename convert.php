@@ -58,8 +58,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 $processingReturnValue = $processor->executePdfProcessing($args);
 $processingReturnValue = $processor->filterReturnValue($processingReturnValue);
 
-$conversionOk = $processor->returnOk($processingReturnValue) && !empty($processedFile)
-    && file_exists($processedFile);
+$conversionOk = !empty($processedFile) && file_exists($processedFile);
 
 $response['returnValue'] = $processingReturnValue;
 

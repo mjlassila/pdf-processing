@@ -106,6 +106,18 @@
         }, 1000);
     };
 
+    const handleFinalStatus = (data, successText, failedText) => {
+        if (data.status === 'success') {
+            setStatus('success', data.message || successText, false);
+        } else {
+            setStatus('danger', data.message || failedText, false);
+        }
+
+        renderDownload(data);
+        updateDetails(data.returnValue || '');
+        stopPolling();
+    };
+
     convertButton.addEventListener('click', (event) => {
         event.preventDefault();
 
@@ -130,21 +142,28 @@
         })
             .then((response) => response.json())
             .then((data) => {
-                stopPolling();
                 if (data.status === 'success') {
-                    setStatus('success', data.message || successText, false);
-                } else {
-                    setStatus('danger', data.message || failedText, false);
+                    handleFinalStatus(data, successText, failedText);
+                    return;
                 }
 
-                renderDownload(data);
-                updateDetails(data.returnValue || '');
+                fetch('conversion_status.php', { credentials: 'same-origin' })
+                    .then((response) => response.json())
+                    .then((statusData) => {
+                        if (statusData.status === 'success' || statusData.status === 'error') {
+                            handleFinalStatus(statusData, successText, failedText);
+                        } else {
+                            updateDetails(data.returnValue || '');
+                        }
+                    })
+                    .catch(() => {
+                        updateDetails(data.returnValue || '');
+                    });
             })
             .catch(() => {
-                setStatus('danger', failedText, false);
+                handleFinalStatus({ status: 'error', message: failedText }, successText, failedText);
             })
             .finally(() => {
-                stopPolling();
                 convertButton.disabled = false;
             });
     });
