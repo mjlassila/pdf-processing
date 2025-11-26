@@ -222,3 +222,12 @@ body {
         word-break: break-word;
         margin-top: 12px;
 }
+
+#conversion-result {
+        margin-top: 10px;
+}
+
+#conversion-details {
+        display:none;
+}
+
