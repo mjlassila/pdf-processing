@@ -61,6 +61,11 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 $processingReturnValue = $processor->executePdfProcessing($args);
 $processingReturnValue = $processor->filterReturnValue($processingReturnValue);
 
+# Re-open the session so we can persist the conversion outcome for status checks.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $conversionOk = $processor->returnOk($processingReturnValue)
     && !empty($processedFile)
     && file_exists($processedFile);
