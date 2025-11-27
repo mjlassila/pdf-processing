@@ -31,9 +31,16 @@ if (empty($_SESSION['uploadFile']) || !file_exists($_SESSION['uploadFile'])) {
     exit;
 }
 
+if (!empty($_SESSION['conversionFailed']) && $_SESSION['conversionFailed'] == true) {
+    $response['status'] = 'error';
+    $response['message'] = $messages['conversionFailed'] ?? 'Conversion failed.';
+    echo json_encode($response);
+    exit;
+}
+
 if (
     !empty($_SESSION['conversionFinished'])
-    && !empty($_SESSION['processedFile'])
+    && $_SESSION['conversionFinished'] == true
     && file_exists($_SESSION['processedFile'])
 ) {
     $response['status'] = 'success';

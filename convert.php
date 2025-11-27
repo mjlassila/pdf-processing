@@ -36,6 +36,7 @@ if (empty($_SESSION['uploadFile']) || !file_exists($_SESSION['uploadFile'])) {
 
 $_SESSION['conversionFinished'] = false;
 
+
 $level = filter_input(INPUT_POST, 'pdfa_convlevel', FILTER_SANITIZE_STRING) ?? '';
 $mode = filter_input(INPUT_POST, 'pdfa_mode', FILTER_SANITIZE_STRING) ?? '';
 
@@ -72,8 +73,11 @@ if ($conversionOk) {
     $response['downloadUrl'] = 'stream.php';
     $response['displayName'] = $processedDisplayName ?: basename($processedFile);
     $_SESSION['conversionFinished'] = true;
+    $_SESSION['conversionFailed'] = false;
 } else {
     $response['message'] = $messages['conversionFailed'] ?? ($messages['failMessage'] ?? 'Conversion failed.');
+    $response['status'] = 'error';
+    $_SESSION['conversionFailed'] = true;
 }
 
 echo json_encode($response);
