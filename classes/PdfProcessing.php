@@ -200,7 +200,7 @@ class PdfProcessing
     $args[] = $this->configs['cachefolderArg'];
     $args[] = $this->configs['pdfLangArg'] . $lang;
     $args[] = $_SESSION['uploadFile'];
-    $args[] = $this->configs['pdfQuickArg'];
+    $args[] = $this->configs['pdfForceConversion'];
 
     // Filter out any accidental empty strings
     return array_filter($args, fn($v) => trim($v) !== '');
