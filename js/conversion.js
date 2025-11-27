@@ -147,7 +147,7 @@
                 .catch(() => {
                     // Ignore polling errors; the main request will handle failures.
                 });
-        }, 1000);
+        }, 5000);
     };
 
     const handleFinalStatus = (data, successText, failedText) => {
