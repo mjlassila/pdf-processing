@@ -31,16 +31,26 @@ if (empty($_SESSION['uploadFile']) || !file_exists($_SESSION['uploadFile'])) {
     exit;
 }
 
-if (!empty($_SESSION['conversionFailed']) && $_SESSION['conversionFailed'] == true) {
-    $response['status'] = 'error';
-    $response['message'] = $messages['conversionFailed'] ?? 'Conversion failed.';
-    echo json_encode($response);
-    exit;
+// If the lock file exists, inspect its status.
+$lockFile = $processor->getLockFilePath($_SESSION['uploadFile']);
+if (!empty($lockFile) && file_exists($lockFile)) {
+    $lockStatus = trim((string) file_get_contents($lockFile));
+
+    if ($lockStatus === 'running') {
+        echo json_encode($response);
+        exit;
+    }
+
+    if ($lockStatus === 'failed') {
+        $response['status'] = 'error';
+        $response['message'] = $messages['conversionFailed'] ?? 'Conversion failed.';
+        echo json_encode($response);
+        exit;
+    }
 }
 
 if (
-    !empty($_SESSION['conversionFinished'])
-    && $_SESSION['conversionFinished'] == true
+    !empty($_SESSION['processedFile'])
     && file_exists($_SESSION['processedFile'])
 ) {
     $response['status'] = 'success';

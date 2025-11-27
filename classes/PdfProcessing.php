@@ -102,7 +102,7 @@ class PdfProcessing
      * 
      * @param string $fileExt - the file extension
      */
-    public function createAndSaveProcessedFileName($fileExt) 
+    public function createAndSaveProcessedFileName($fileExt)
     {
         if (!file_exists($this->configs['processedPath'])) {
             mkdir($this->configs['processedPath'], 0755, true);
@@ -249,12 +249,95 @@ class PdfProcessing
      */
     public function createPdfFreeArgs($freeArgs, $lang)
     {
-        $args = escapeshellcmd($freeArgs) . ' ' . $this->configs['pdfOutputArg'] 
-            . $_SESSION['processedFile'] . ' ' . $this->configs['pdfOverwriteArg'] . ' ' 
-            . $this->configs['cachefolderArg'] . ' ' 
+        $args = escapeshellcmd($freeArgs) . ' ' . $this->configs['pdfOutputArg']
+            . $_SESSION['processedFile'] . ' ' . $this->configs['pdfOverwriteArg'] . ' '
+            . $this->configs['cachefolderArg'] . ' '
             . $this->configs['pdfLangArg'] . $lang . ' '
             . $_SESSION['uploadFile'];
         return $args;
+    }
+
+    /**
+     * Returns the full path to the lock file for the given upload file.
+     *
+     * @param string $uploadFile
+     * @return string|null
+     */
+    public function getLockFilePath($uploadFile)
+    {
+        if (empty($uploadFile)) {
+            return null;
+        }
+
+        $directory = dirname($uploadFile);
+        $fileName = basename($uploadFile);
+
+        if (empty($directory) || empty($fileName)) {
+            return null;
+        }
+
+        return $directory . DIRECTORY_SEPARATOR . $fileName . '.lock';
+    }
+
+    /**
+     * Creates a lock file next to the upload file to signal an ongoing process.
+     *
+     * @param string $uploadFile
+     * @return string|null - the created lock file path or null on failure
+     */
+    public function createLockFile($uploadFile)
+    {
+        $lockFile = $this->getLockFilePath($uploadFile);
+
+        if (empty($lockFile)) {
+            return null;
+        }
+
+        $lockDir = dirname($lockFile);
+
+        if (!is_dir($lockDir) || !is_writable($lockDir)) {
+            error_log("Cannot create lock file: directory '$lockDir' is not writable.");
+            return null;
+        }
+
+        if ($this->writeLockFileStatus($lockFile, 'running') === false) {
+            return null;
+        }
+
+        return $lockFile;
+    }
+
+    /**
+     * Writes the given status into the lock file.
+     *
+     * @param string $lockFile
+     * @param string $status
+     * @return bool
+     */
+    public function writeLockFileStatus($lockFile, $status)
+    {
+        if (empty($lockFile)) {
+            return false;
+        }
+
+        if (file_put_contents($lockFile, $status) === false) {
+            error_log("Failed to write status '$status' to lock file at '$lockFile'.");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Removes a previously created lock file.
+     *
+     * @param string|null $lockFile
+     */
+    public function removeLockFile($lockFile)
+    {
+        if (!empty($lockFile) && file_exists($lockFile)) {
+            unlink($lockFile);
+        }
     }
     
     /**

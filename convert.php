@@ -34,9 +34,6 @@ if (empty($_SESSION['uploadFile']) || !file_exists($_SESSION['uploadFile'])) {
     exit;
 }
 
-$_SESSION['conversionFinished'] = false;
-
-
 $level = filter_input(INPUT_POST, 'pdfa_convlevel', FILTER_SANITIZE_STRING) ?? '';
 $mode = filter_input(INPUT_POST, 'pdfa_mode', FILTER_SANITIZE_STRING) ?? '';
 
@@ -52,37 +49,48 @@ if (!empty($metadataArray)) {
     }
 }
 
-$args = $processor->createPdfaArgs($level, $mode, $lang);
-# Release the session lock before running the conversion so status requests can
-# check for the result while the processor is running.
-if (session_status() === PHP_SESSION_ACTIVE) {
-    session_write_close();
-}
-$processingReturnValue = $processor->executePdfProcessing($args);
-$processingReturnValue = $processor->filterReturnValue($processingReturnValue);
+// Initialize lock file to signal processing has started.
+$lockFile = $processor->createLockFile($_SESSION['uploadFile']);
+$processingReturnValue = '';
+$conversionOk = false;
 
-# Re-open the session so we can persist the conversion outcome for status checks.
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+try {
+    $args = $processor->createPdfaArgs($level, $mode, $lang);
+    # Release the session lock before running the conversion so status requests can
+    # check for the result while the processor is running.
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
+    $processingReturnValue = $processor->executePdfProcessing($args);
+    $processingReturnValue = $processor->filterReturnValue($processingReturnValue);
 
-$conversionOk = $processor->returnOk($processingReturnValue)
-    && !empty($processedFile)
-    && file_exists($processedFile);
+    # Re-open the session so we can persist the conversion outcome for status checks.
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
-$response['returnValue'] = $processingReturnValue;
+    $conversionOk = $processor->returnOk($processingReturnValue)
+        && !empty($processedFile)
+        && file_exists($processedFile);
 
-if ($conversionOk) {
-    $response['status'] = 'success';
-    $response['message'] = $messages['conversionSuccess'] ?? ($messages['downloadLabel'] ?? 'Conversion finished.');
-    $response['downloadUrl'] = 'stream.php';
-    $response['displayName'] = $processedDisplayName ?: basename($processedFile);
-    $_SESSION['conversionFinished'] = true;
-    $_SESSION['conversionFailed'] = false;
-} else {
-    $response['message'] = $messages['conversionFailed'] ?? ($messages['failMessage'] ?? 'Conversion failed.');
-    $response['status'] = 'error';
-    $_SESSION['conversionFailed'] = true;
+    $response['returnValue'] = $processingReturnValue;
+
+    if ($conversionOk) {
+        $response['status'] = 'success';
+        $response['message'] = $messages['conversionSuccess'] ?? ($messages['downloadLabel'] ?? 'Conversion finished.');
+        $response['downloadUrl'] = 'stream.php';
+        $response['displayName'] = $processedDisplayName ?: basename($processedFile);
+    } else {
+        $response['message'] = $messages['conversionFailed'] ?? ($messages['failMessage'] ?? 'Conversion failed.');
+        $response['status'] = 'error';
+        if (!empty($lockFile)) {
+            $processor->writeLockFileStatus($lockFile, 'failed');
+        }
+    }
+} finally {
+    if ($conversionOk) {
+        $processor->removeLockFile($lockFile);
+    }
 }
 
 echo json_encode($response);
