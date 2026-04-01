@@ -24,12 +24,10 @@ if (isset($_GET['lang'])) {
 } else if (isset($_SESSION['lang'])) {
     $lang = $_SESSION['lang'];
 } else {
-    $lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    $lang = "fi";
 }
 
-if ($lang == 'de') {
-    $messages = parse_ini_file("ini/messages_de.ini");
-} elseif ($lang == 'fi') {
+if ($lang == 'fi') {
     $messages = parse_ini_file("ini/messages_fi.ini");
 } else {
     $messages = parse_ini_file("ini/messages_en.ini");
