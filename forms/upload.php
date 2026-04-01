@@ -17,8 +17,8 @@
 <form method="post" action="index.php" enctype="multipart/form-data">
     <div class="container content-card">
     	<div class="row">
-			<div class="col-sm-3">
-    			<p>	<?php echo htmlspecialchars($messages['introduction'], ENT_QUOTES, 'UTF-8') ?> </p>
+			<div class="col-sm">
+    			<p>	<?php echo $messages['introduction'] ?> </p>
     		</div>
 		</div>
 		
