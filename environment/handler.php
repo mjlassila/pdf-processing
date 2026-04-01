@@ -19,7 +19,7 @@
     if (!empty($_FILES)) {
         if (empty($_FILES['fileToUpload']['name'])) {
             $infoMessage = $messages['fileNotChosen'];
-        } elseif ($_FILES['fileToUpload']['size'] > 100 * 1024 * 1024) { // 100MB in bytes
+        } elseif ($_FILES['fileToUpload']['size'] > $configs['max_filesize_in_mb'] * 1024 * 1024) { // converted to bytes
             $errorMessage = $messages['fileTooLarge'];
         } elseif (pathinfo($_FILES['fileToUpload']['name'], PATHINFO_EXTENSION) != 'pdf' || mime_content_type($_FILES['fileToUpload']['tmp_name']) != 'application/pdf') {
             $errorMessage = $messages['uploadNoPdf'];
