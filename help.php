@@ -18,7 +18,7 @@ include_once("environment/init.php");
 include_once("elements/header.php");
 
 ?>
-<div class="container helppage">
+<div class="container content-card">
     <div class="row">
         <div class="col-sm-9">
 
