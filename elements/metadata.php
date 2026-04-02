@@ -15,7 +15,7 @@
  */
 ?>
 <div class="row top-buffer">
-	<div class="col-sm-9 text-info"><?php echo htmlspecialchars($messages['pdfaMetadataMessage'], ENT_QUOTES, 'UTF-8') ?></div>
+	<div class="col-sm text-info"><?php echo htmlspecialchars($messages['pdfaMetadataMessage'], ENT_QUOTES, 'UTF-8') ?></div>
 </div>
 <?php foreach ($configs['metadataField'] as $field) { ?>    
     <div class="row top-buffer">
