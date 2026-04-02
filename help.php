@@ -24,13 +24,15 @@ include_once("elements/header.php");
 
             <h3><?php echo($messages['helpHeadline']) ?></h3>
             <p><?php echo($messages['helpFileBrowse']) ?></p>
-            <p><?php echo($messages['helpIntroAlert']) ?>
             <div class="alert alert-warning"><?php echo($messages['helpIntroAlert']) ?></div>
-            <p><?php echo($messages['helpMetadataIntro']) ?>
-            <p><?php echo($messages['helpMetadataPurpose']) ?>
-            <p><?php echo($messages['helpMetadataProcess']) ?>
-            <p><?php echo($messages['helpConversionReview']) ?>
-            <p><?php echo($messages['helpRememberToDetele']) ?>
+        </div>
+        <div class="col-sm-9">
+
+            <p><?php echo($messages['helpMetadataIntro']) ?></p>
+            <p><?php echo($messages['helpMetadataPurpose']) ?></p>
+            <p><?php echo($messages['helpMetadataProcess']) ?></p>
+            <p><?php echo($messages['helpConversionReview']) ?></p>
+            <p><?php echo($messages['helpRememberToDelete']) ?></p>
         </div>
     </div>
 
