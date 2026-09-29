@@ -4,14 +4,14 @@
  *
  * This software is licensed under GNU General Public License version 3 or later.
  *
- * For the full copyright and license information, 
- * please see https://www.gnu.org/licenses/gpl-3.0.html or read 
+ * For the full copyright and license information,
+ * please see https://www.gnu.org/licenses/gpl-3.0.html or read
  * the LICENSE.txt file that was distributed with this source code.
  */
 ?>
 <?php
-/** 
- * Session start, messages load, class initialization 
+/**
+ * Session start, messages load, class initialization
  */
 
 session_start();
@@ -24,12 +24,10 @@ if (isset($_GET['lang'])) {
 } else if (isset($_SESSION['lang'])) {
     $lang = $_SESSION['lang'];
 } else {
-    $lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    $lang = "fi";
 }
 
-if ($lang == 'de') {
-    $messages = parse_ini_file("ini/messages_de.ini");
-} elseif ($lang == 'fi') {
+if ($lang == 'fi') {
     $messages = parse_ini_file("ini/messages_fi.ini");
 } else {
     $messages = parse_ini_file("ini/messages_en.ini");

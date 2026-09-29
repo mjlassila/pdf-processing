@@ -1,11 +1,12 @@
 <?php
 /**
  * (c) 2017 Technische Universität Berlin
+ * (c) 2025-2026 Tampere University
  *
  * This software is licensed under GNU General Public License version 3 or later.
  *
- * For the full copyright and license information, 
- * please see https://www.gnu.org/licenses/gpl-3.0.html or read 
+ * For the full copyright and license information,
+ * please see https://www.gnu.org/licenses/gpl-3.0.html or read
  * the LICENSE.txt file that was distributed with this source code.
  */
 ?>
@@ -14,17 +15,28 @@
  * Input fields for additional metadata.
  */
 ?>
-<div class="row top-buffer">
-	<div class="col-sm-9 text-info"><?php echo htmlspecialchars($messages['pdfaMetadataMessage'], ENT_QUOTES, 'UTF-8') ?></div>
+<div class="info-container">
+    <?= $messages['pdfaMetadataMessage'] ?>
 </div>
-<?php foreach ($configs['metadataField'] as $field) { ?>    
-    <div class="row top-buffer">
-    	<div class="col-sm-3">
-    		<p><?php echo htmlspecialchars($messages[$field . 'Label'], ENT_QUOTES, 'UTF-8') ?></p>
-    	</div>
-    	<div class="col-sm-5">
-    		<input name="<?php echo htmlspecialchars($field, ENT_QUOTES, 'UTF-8') ?>" type="text" class="form-control" />
-    	</div>
+
+<?php foreach ($configs['metadataField'] as $index => $field): ?>
+    <div class="row <?= $index === 0 ? 'top-buffer' : '' ?>">
+        <label for="<?= $field ?>" class="col-form-label col-md-4 col-lg-3">
+            <?= $messages[$field . 'Label'] ?>
+        </label>
+        <div class="col-md-8 col-lg-9 pb-3">
+            <?php if ($field !== 'description'): ?>
+                <input id="<?= $field ?>" name="<?= $field ?>" type="text" class="form-control" />
+            <?php else: ?>
+                <textarea
+                    id="<?= $field ?>"
+                    name="<?= $field ?>"
+                    type="text"
+                    class="form-control"
+                    maxlength="<?= $configs['descriptionMaxLenght'] ?>"
+                    rows="3"></textarea>
+                <p class="char-counter">0/2000</p>
+            <?php endif; ?>
+        </div>
     </div>
-<?php } ?>
-    
+<?php endforeach; ?>
