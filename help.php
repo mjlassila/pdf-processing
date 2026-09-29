@@ -1,11 +1,12 @@
 <?php
 /**
  * (c) 2017 Technische Universität Berlin
+ * (c) 2025-2026 Tampere University
  *
  * This software is licensed under GNU General Public License version 3 or later.
  *
- * For the full copyright and license information, 
- * please see https://www.gnu.org/licenses/gpl-3.0.html or read 
+ * For the full copyright and license information,
+ * please see https://www.gnu.org/licenses/gpl-3.0.html or read
  * the LICENSE.txt file that was distributed with this source code.
  */
 ?>
@@ -19,24 +20,19 @@ include_once("elements/header.php");
 
 ?>
 <div class="container content-card">
-    <div class="row">
-        <div class="col-sm-9">
+    <h1><?php echo $messages['headline'] ?></h1>
+    <p><?php echo($messages['helpFileBrowse']) ?></p>
 
-            <h3><?php echo($messages['helpHeadline']) ?></h3>
-            <p><?php echo($messages['helpFileBrowse']) ?></p>
-            <div class="alert alert-warning"><?php echo($messages['helpIntroAlert']) ?></div>
-        </div>
-        <div class="col-sm-9">
-
-            <p><?php echo($messages['helpMetadataIntro']) ?></p>
-            <p><?php echo($messages['helpMetadataPurpose']) ?></p>
-            <p><?php echo($messages['helpMetadataProcess']) ?></p>
-            <p><?php echo($messages['helpConversionReview']) ?></p>
-            <p><?php echo($messages['helpRememberToDelete']) ?></p>
-        </div>
+    <div class="info-container mb-3">
+        <?php echo($messages['helpIntroAlert']) ?>
     </div>
 
+    <p><?php echo($messages['helpMetadataIntro']) ?></p>
+    <p><?php echo($messages['helpMetadataPurpose']) ?></p>
+    <p><?php echo($messages['helpMetadataProcess']) ?></p>
+    <p><?php echo($messages['helpConversionReview']) ?></p>
+    <p><?php echo($messages['helpRememberToDelete']) ?></p>
 </div>
 <?php
-include_once("elements/footer.php");
 
+include_once("elements/footer.php");

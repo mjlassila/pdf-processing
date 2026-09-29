@@ -1,0 +1,61 @@
+/**
+ * (c) 2017 Technische Universität Berlin
+ * (c) 2025-2026 Tampere University
+ *
+ * This software is licensed under GNU General Public License version 3 or later.
+ *
+ * For the full copyright and license information,
+ * please see https://www.gnu.org/licenses/gpl-3.0.html or read
+ * the LICENSE.txt file that was distributed with this source code.
+ */
+
+.btn {
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  width: 15.5rem;
+}
+
+.btn-tuni,
+.btn-tuni:disabled {
+  background-color: var(--tuni-purple);
+  border-color: var(--tuni-purple);
+  color: #fff;
+}
+
+.btn-tuni:disabled {
+  pointer-events: none;
+  opacity: initial;
+}
+
+.btn-tuni:hover,
+.btn-tuni:focus-visible {
+  background-color: #3b006c;
+  border-color: #3b006c;
+  color: #fff;
+}
+
+.btn-tuni:active {
+  background-color: #420871 !important;
+  border-color: var(--tuni-purple);
+  color: #fff!important;
+}
+
+.btn-download {
+  background-color: #137d59;
+  border-color: #0a9b6a;
+  color: #fff;
+}
+
+.btn-download:hover,
+.btn-download:focus-visible {
+  background-color: #16503c;
+  border-color: #0a7e57;
+  color: #fff;
+}
+
+.btn-download:active {
+  background-color: #354348!important;
+  color: #fff!important;
+}

@@ -1,6 +1,7 @@
 <?php
 /**
  * (c) 2017 Technische Universität Berlin
+ * (c) 2025-2026 Tampere University
  *
  * This software is licensed under GNU General Public License version 3 or later.
  *
@@ -49,10 +50,7 @@ if (!empty($lockFile) && file_exists($lockFile)) {
     }
 }
 
-if (
-    !empty($_SESSION['processedFile'])
-    && file_exists($_SESSION['processedFile'])
-) {
+if (!empty($_SESSION['processedFile']) && file_exists($_SESSION['processedFile'])) {
     $response['status'] = 'success';
     $response['message'] = $messages['conversionSuccess'] ?? 'Conversion finished.';
     $response['downloadUrl'] = 'stream.php';

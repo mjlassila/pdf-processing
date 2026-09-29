@@ -1,18 +1,19 @@
 <?php
 /**
  * (c) 2017 Technische Universität Berlin
+ * (c) 2025-2026 Tampere University
  *
  * This software is licensed under GNU General Public License version 3 or later.
  *
- * For the full copyright and license information, 
- * please see https://www.gnu.org/licenses/gpl-3.0.html or read 
+ * For the full copyright and license information,
+ * please see https://www.gnu.org/licenses/gpl-3.0.html or read
  * the LICENSE.txt file that was distributed with this source code.
  */
 ?>
 <?php
 /**
- * Handles the download of the processed file. 
- */    
+ * Handles the download of the processed file.
+ */
 
 include_once("environment/init.php");
 

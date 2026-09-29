@@ -1,225 +1,319 @@
-(function () {
-    const form = document.getElementById('processing-form');
-    const convertButton = document.getElementById('pdfa-convert-button');
-    const statusBox = document.getElementById('conversion-status');
-    const statusText = document.getElementById('conversion-status-text');
-    const statusIcon = document.getElementById('conversion-status-icon');
-    const resultBox = document.getElementById('conversion-result');
-    const detailsBox = document.getElementById('conversion-details');
+/**
+ * (c) 2017 Technische Universität Berlin
+ * (c) 2025-2026 Tampere University
+ *
+ * This software is licensed under GNU General Public License version 3 or later.
+ *
+ * For the full copyright and license information,
+ * please see https://www.gnu.org/licenses/gpl-3.0.html or read
+ * the LICENSE.txt file that was distributed with this source code.
+ */
 
-    if (!form || !convertButton || !statusBox || !statusText || !statusIcon) {
-        return;
+const conversionInfoContainer = document.querySelector('.conversion-info');
+const fileInput = document.getElementById('fileToUpload');
+const startConversionBtn = document.getElementById('start-conversion-btn');
+const form = document.getElementById('processing-form');
+const convertButton = document.getElementById('pdfa-convert-button');
+const statusContainer = document.getElementById('conversion-status');
+const statusText = document.getElementById('conversion-status-text');
+const statusIcon = document.getElementById('conversion-status-icon');
+
+/**
+ * Add or remove 'hidden' CSS class to/from HTML element
+ *
+ * @param {HTMLElement} element
+ * @param {boolean} hidden Boolean indicating if the hidden class should be added or removed
+ */
+function toggleElementHidden(element, hidden) {
+  element.classList.toggle('hidden', hidden);
+}
+
+/**
+ * Replace current class names of status icon with new class names
+ *
+ * @param {Array} classes An array of new class names
+ */
+function resetIcon(classes) {
+  statusIcon.className = classes.join(' ');
+}
+
+/**
+ * Set class names and text content in the #conversion-status container
+ *
+ * @param {string} type Status type
+ * @param {string} text Status text
+ * @param {boolean} spinning Boolean indicating if there should be a spinner shown
+ */
+function setStatus(type, text, spinning = false) {
+  const containerClasses = ['message-container', `message-${type}`];
+  statusContainer.className = containerClasses.join(' ');
+  statusText.textContent = text;
+
+  const iconClasses = ['bi'];
+
+  if (type === 'success') {
+    iconClasses.push('bi-check');
+  } else if (type === 'danger') {
+    iconClasses.push('bi-exclamation-triangle-fill');
+  }
+
+  if (spinning) {
+    iconClasses.push('visually-hidden');
+    statusContainer.prepend(createSpinner());
+  }
+
+  resetIcon(iconClasses);
+  toggleElementHidden(statusContainer, false);
+}
+
+/**
+ * Replace convert button in DOM with download button
+ *
+ * @param {Object} data JSON object containing information about the conversion process
+ */
+function renderDownloadBtn(data) {
+  if (!data || data.status !== 'success' || !data.downloadUrl) {
+    return;
+  }
+
+  const btnContainer = document.querySelector('.control-buttons');
+
+  // Remove the convert file button from DOM
+  btnContainer.firstElementChild.remove();
+
+  // Add download button to the DOM
+  btnContainer.prepend(createDownloadBtn(btnContainer.dataset.readyLabel, data.downloadUrl));
+}
+
+/**
+ * Create button used for downloading the converted file
+ *
+ * @param {string} text Text shown within the button
+ * @param {string} url Url for the href attribute of the download link
+ * @returns {HTMLButtonElement}
+ */
+function createDownloadBtn(text, url) {
+  const downloadBtn = document.createElement('button');
+  downloadBtn.classList.add('btn', 'btn-download');
+  downloadBtn.textContent = text;
+
+  const link = document.createElement('a');
+  link.href = url;
+
+  downloadBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    link.click();
+  });
+
+  return downloadBtn;
+}
+
+/**
+ * Handle finishing the conversion process
+ *
+ * @param {Object} data JSON object containing information about the conversion process
+ * @param {string} successText Fallback text for success status
+ * @param {string} failedText Fallback text for error status
+ */
+function handleFinalStatus(data, successText, failedText) {
+  if (data.status === 'success') {
+    setStatus('success', data.message || successText, false);
+  } else {
+    setStatus('danger', data.message || failedText, false);
+  }
+
+  renderDownloadBtn(data);
+  statusContainer.querySelector('.spinner-border').remove();
+  statusContainer.querySelector('.spinner-message').remove();
+  convertButton.innerHTML = convertButton.dataset.textContent;
+}
+
+/**
+ * Create and return elements for adding a spinner wrapped in document fragment
+ *
+ * @returns {HTMLDocumentFragment}
+ */
+function createSpinner() {
+  const spinner = document.createElement('span');
+  spinner.classList.add('spinner-border', 'spinner-border-sm');
+  spinner.setAttribute('aria-hidden', true);
+  const accessibilityMessage = document.createElement('span');
+  // TODO: it should be considered if the content of this message could be improved
+  accessibilityMessage.textContent = convertButton.dataset.inProgress;
+  accessibilityMessage.setAttribute('role', 'status');
+  accessibilityMessage.classList.add('spinner-message', 'visually-hidden');
+
+  const fragment = document.createDocumentFragment();
+  fragment.append(spinner, accessibilityMessage);
+  return fragment;
+}
+
+/**
+ * Call backend to convert the file and handle the result
+ *
+ * @param {Object} metadata Metadata for the file from <form> element
+ * @param {string} successText Fallback text for success events
+ * @param {string} failedText Fallback text for failure events
+ */
+async function convertFile(metadata, successText, failedText) {
+  try {
+    const response = await fetch('convert.php', {
+      method: 'POST',
+      body: metadata,
+      credentials: 'same-origin',
+      signal: AbortSignal.timeout(180000) // should be 3 min === 180000
+    });
+
+    if (!response.ok) {
+      throw new Error(response.status);
     }
 
-    const showBox = (element) => {
-        element.classList.remove('conversion-hidden');
-    };
+    const data = await response.json();
 
-    const hideBox = (element) => {
-        element.classList.add('conversion-hidden');
-    };
+    // TODO: could PHP process be changed so that in case of error the status of response would be in range 5**?
+    if (data.status === 'success' || data.status === 'error') {
+      handleFinalStatus(data, successText, failedText);
+    }
+  }
+  catch (error) {
+    // TODO: this is here only for testing purposes, remove before making the application public
+    if (error.name === 'TimeoutError') {
+      console.warn('TIMEOUT ERROR');
+    }
+    // TODO: currently this branch is only visited in errors originating in JS code, fetch errors other than timeout do not come here ever
+    handleFinalStatus({ status: 'error', message: failedText }, successText, failedText);
+  }
+  finally {
+    convertButton.disabled = false;
+  }
+}
 
-    const resetIcon = (classes) => {
-        statusIcon.className = classes.join(' ');
-    };
+/**
+ * Handle all the actions needed for the file conversion process
+ */
+function startFileConversion() {
+  convertButton.textContent = '';
+  convertButton.appendChild(createSpinner());
 
-    const setStatus = (type, text, spinning = false) => {
-        const alertClasses = ['alert', `alert-${type}`];
-        statusBox.className = alertClasses.join(' ');
-        statusText.textContent = text;
+  const inProgressText = statusContainer.dataset.inProgress;
+  const successText = statusContainer.dataset.success;
+  const failedText = statusContainer.dataset.failed;
 
-        const iconClasses = ['glyphicon'];
-        if (type === 'success') {
-            iconClasses.push('glyphicon-ok');
-        } else if (type === 'danger') {
-            iconClasses.push('glyphicon-remove');
-        } else {
-            iconClasses.push('glyphicon-refresh');
-        }
+  const formData = new FormData(form);
 
-        if (spinning) {
-            iconClasses.push('conversion-spinner');
-        }
+  // TODO: should this be moved to configs?
+  formData.set('pdfa_convert', '1');
 
-        resetIcon(iconClasses);
-        showBox(statusBox);
-    };
+  convertButton.disabled = true;
+  setStatus('info', inProgressText, true);
+  toggleElementHidden(conversionInfoContainer, false);
 
-    const renderDownload = (data) => {
-        if (!data || data.status !== 'success' || !data.downloadUrl) {
-            resultBox.innerHTML = '';
-            hideBox(resultBox);
-            return;
-        }
+  convertFile(formData, successText, failedText);
+}
 
-        const displayName = data.displayName ? ` (${data.displayName})` : '';
-        const downloadName = data.displayName || '';
-        resultBox.innerHTML = `
-            <div class="alert alert-success">
-                <span class="glyphicon glyphicon-download"></span>
-                <a href="${data.downloadUrl}" class="btn btn-info btn-sm top-buffer" data-download-url="${data.downloadUrl}" data-download-name="${downloadName}">${resultBox.dataset.downloadLabel}</a>
-                <span class="text-info">${resultBox.dataset.readyLabel}${displayName}</span>
-            </div>
-        `;
-        showBox(resultBox);
-    };
+/**
+ * Handle all the actions related to the file input
+ */
+function handleFileInput() {
+  const label = document.querySelector('.file-upload label');
+  const icon = document.createElement('i');
+  icon.classList.add('bi', 'bi-cloud-upload');
+  icon.setAttribute('ariaHidden', true);
 
-    const downloadFile = (downloadUrl, downloadName) => {
-        if (!downloadUrl) {
-            return;
-        }
+  if (fileInput.files[0].type !== 'application/pdf') {
+    // Add class in case it has been removed previously
+    startConversionBtn.classList.add('hidden');
+    toggleLabelContent(label, icon, true);
+    return;
+  }
 
-        const downloadStatusText = resultBox.dataset.downloadingLabel || 'Downloading…';
-        setStatus('info', downloadStatusText, true);
+  const fileName = document.createElement('span');
+  fileName.classList.add('d-block');
+  fileName.textContent = fileInput.files[0].name;
 
-        fetch(downloadUrl, { credentials: 'same-origin' })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Download failed');
-                }
+  toggleLabelContent(label, icon, false, fileName);
+  startConversionBtn.classList.remove('hidden');
+}
 
-                return response.blob().then((blob) => ({ blob, response }));
-            })
-            .then(({ blob, response }) => {
-                let filename = downloadName;
-                const disposition = response.headers.get('Content-Disposition') || '';
+/**
+ * Toggle the contents of the file input label based on parameters
+ *
+ * @param {HTMLLabelElement} label Label element of the file input element
+ * @param {HTMLElement} icon Icon within the label element
+ * @param {boolean} error Boolean indicating whether the upload process has encountered an error
+ * @param {HTMLSpanElement} fileName Span element containing the file name of the uploaded PDF, defaults to null
+ */
+function toggleLabelContent(label, icon, error, fileName = null) {
+  icon.classList.toggle('error', error);
+  label.classList.toggle('error', error);
+  label.classList.toggle('border-error', error);
 
-                if (!filename) {
-                    const match = disposition.match(/filename\*?=(?:UTF-8''|\"?)([^;\"]+)/i);
-                    if (match && match[1]) {
-                        filename = decodeURIComponent(match[1].replace(/\"/g, '').trim());
-                    }
-                }
+  label.textContent = error ? label.dataset.fileNotPdf : label.dataset.uploadedFile;
+  label.prepend(icon);
 
-                const objectUrl = URL.createObjectURL(blob);
-                const tempLink = document.createElement('a');
-                tempLink.href = objectUrl;
-                tempLink.download = filename || '';
-                document.body.appendChild(tempLink);
-                tempLink.click();
-                tempLink.remove();
-                URL.revokeObjectURL(objectUrl);
+  fileName && label.append(fileName);
+}
 
-                setStatus('success', statusBox.dataset.success, false);
-            })
-            .catch(() => {
-                setStatus('danger', statusBox.dataset.failed, false);
-            });
-    };
+/**
+ * Stop propagation and prevent default during drag-and-drop event
+ *
+ * @param {Event} event Drag-and-drop event
+ */
+function preventPropagation(event) {
+  event.stopPropagation();
+  event.preventDefault();
+}
 
-    const updateDetails = (text) => {
-        if (text) {
-            detailsBox.textContent = text;
-            showBox(detailsBox);
-        } else {
-            detailsBox.textContent = '';
-            hideBox(detailsBox);
-        }
-    };
+// Change event listener for the file input element
+fileInput?.addEventListener('change', () => {
+  if (fileInput.files.length > 0) {
+    handleFileInput();
+  }
+});
 
-    let statusPoller = null;
+// Dragenter event listener for the drop-area used for file uploading
+document.querySelector('.file-upload')?.addEventListener('dragenter', (event) => {
+  preventPropagation(event);
+  document.querySelector('.file-upload').classList.add('drag-on-drop-area');
+});
 
-    const stopPolling = () => {
-        if (statusPoller !== null) {
-            clearInterval(statusPoller);
-            statusPoller = null;
-        }
-    };
+// Dragover event listener for the drop-area used for file uploading
+document.querySelector('.file-upload')?.addEventListener('dragover', (event) => {
+  preventPropagation(event);
+});
 
-    const pollStatus = (successText, failedText) => {
-        if (statusPoller !== null) {
-            return;
-        }
+// Dragleave event listener for the drop-area used for file uploading
+document.querySelector('.file-upload')?.addEventListener('dragleave', (event) => {
+  preventPropagation(event);
+  const dropArea = document.querySelector('.file-upload');
 
-        statusPoller = setInterval(() => {
-            fetch('conversion_status.php', { credentials: 'same-origin' })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.status === 'success') {
-                        setStatus('success', data.message || successText, false);
-                        renderDownload(data);
-                        stopPolling();
-                    } else if (data.status === 'error') {
-                        setStatus('danger', data.message || failedText, false);
-                        stopPolling();
-                    }
-                })
-                .catch(() => {
-                    // Ignore polling errors; the main request will handle failures.
-                });
-        }, 5000);
-    };
+  if (!dropArea.contains(event.relatedTarget)) {
+    dropArea.classList.remove('drag-on-drop-area');
+  }
+});
 
-    const handleFinalStatus = (data, successText, failedText) => {
-        if (data.status === 'success') {
-            setStatus('success', data.message || successText, false);
-        } else {
-            setStatus('danger', data.message || failedText, false);
-        }
+// Drop event listener for the drop-area used for file uploading
+document.querySelector('.file-upload')?.addEventListener('drop', (event) => {
+  preventPropagation(event);
+  document.querySelector('.file-upload').classList.remove('drag-on-drop-area');
+  const files = event.dataTransfer.files;
 
-        renderDownload(data);
-        updateDetails(data.returnValue || '');
-        stopPolling();
-    };
+  if (files.length > 0) {
+    fileInput.files = files;
+    handleFileInput();
+  }
+});
 
-    convertButton.addEventListener('click', (event) => {
-        event.preventDefault();
+// Click event listener for starting the file conversion process
+convertButton?.addEventListener('click', (event) => {
+  event.preventDefault();
+  startFileConversion();
+});
 
-        const inProgressText = statusBox.dataset.inProgress;
-        const successText = statusBox.dataset.success;
-        const failedText = statusBox.dataset.failed;
-
-        const formData = new FormData(form);
-        formData.set('pdfa_convert', '1');
-
-        convertButton.disabled = true;
-        setStatus('info', inProgressText, true);
-        hideBox(resultBox);
-        hideBox(detailsBox);
-
-        pollStatus(successText, failedText);
-
-        fetch('convert.php', {
-            method: 'POST',
-            body: formData,
-            credentials: 'same-origin',
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.status === 'success') {
-                    handleFinalStatus(data, successText, failedText);
-                    return;
-                }
-
-                fetch('conversion_status.php', { credentials: 'same-origin' })
-                    .then((response) => response.json())
-                    .then((statusData) => {
-                        if (statusData.status === 'success' || statusData.status === 'error') {
-                            handleFinalStatus(statusData, successText, failedText);
-                        } else {
-                            updateDetails(data.returnValue || '');
-                        }
-                    })
-                    .catch(() => {
-                        updateDetails(data.returnValue || '');
-                    });
-            })
-            .catch(() => {
-                handleFinalStatus({ status: 'error', message: failedText }, successText, failedText);
-            })
-            .finally(() => {
-                convertButton.disabled = false;
-            });
-    });
-
-    resultBox.addEventListener('click', (event) => {
-        const downloadTrigger = event.target.closest('[data-download-url]');
-
-        if (!downloadTrigger) {
-            return;
-        }
-
-        event.preventDefault();
-        downloadFile(downloadTrigger.dataset.downloadUrl, downloadTrigger.dataset.downloadName || '');
-    });
-})();
+// Input event listener for the #description <textarea> that updates the associated character counter element
+document.getElementById('description')?.addEventListener('input', (event) => {
+  const textArea = event.target;
+  const counter = textArea.nextElementSibling;
+  const maxLength = textArea.maxLength;
+  counter.textContent = `${textArea.textLength}/${maxLength}`;
+});
