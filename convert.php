@@ -81,6 +81,7 @@ try {
         $response['downloadUrl'] = 'stream.php';
         $response['displayName'] = $processedDisplayName ?: basename($processedFile);
     } else {
+        http_response_code(500);
         $response['message'] = $messages['conversionFailed'] ?? ($messages['failMessage'] ?? 'Conversion failed.');
         $response['status'] = 'error';
 
