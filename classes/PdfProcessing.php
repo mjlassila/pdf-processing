@@ -221,23 +221,6 @@ class PdfProcessing
     }
 
     /**
-     * Creates the arguments for PDF/A validation.
-     *
-     * @param string $level - the compliancy level
-     * @return string - the arguments
-     */
-    public function createPdfaValidateArgs($level, $lang)
-    {
-        $args = ' --analyze '
-        . $this->configs['pdfLevelArg'] . $level . ' '
-        . $this->configs['cachefolderArg'] . ' '
-        . $this->configs['pdfLangArg'] . $lang . ' '
-        . $_SESSION['uploadFile'];
-
-        return $args;
-    }
-
-    /**
      * Returns the full path to the lock file for the given upload file.
      *
      * @param string $uploadFile
@@ -364,31 +347,6 @@ class PdfProcessing
             error_log("Failed to start PDF processor");
             return false;
         }
-    }
-
-    /**
-     * Returns the pdf profile in the profiles directory.
-     *
-     * @return array
-     */
-    public function getPdfProfiles()
-    {
-        $profileDir = $this->configs['pdfProfilesPath'];
-        if (!is_dir($profileDir)) {
-            error_log("The pdf profiles path in the config.ini '$profileDir' is not a valid directory");
-            return array();
-        }
-
-        $profiles = scandir($profileDir);
-        $cleanedProfiles = array();
-
-        foreach ($profiles as $val) {
-            if ($val != '.' && $val != '..') {
-                array_push($cleanedProfiles, $val);
-            }
-        }
-
-        return $cleanedProfiles;
     }
 
     /**
