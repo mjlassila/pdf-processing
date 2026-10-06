@@ -205,6 +205,7 @@ class PdfProcessing
         }
 
         $level = $this->configs['target_pdfa_level'];
+        $timeout = $this->configs['timeout'];
 
         $args[] = $this->configs['pdfLevelArg'] . $level;
         $args[] = $this->configs['pdfOutputArg'] . $_SESSION['processedFile'];
@@ -213,6 +214,7 @@ class PdfProcessing
         $args[] = $this->configs['pdfLangArg'] . $lang;
         $args[] = $_SESSION['uploadFile'];
         $args[] = $this->configs['pdfForceConversion'];
+        $args[] = $this->configs['pdfTimeoutArg'] . $timeout;
 
         // Filter out any accidental empty strings
         return array_filter($args, fn($v) => trim($v) !== '');
