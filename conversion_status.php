@@ -43,6 +43,7 @@ if (!empty($lockFile) && file_exists($lockFile)) {
     }
 
     if ($lockStatus === 'failed') {
+        http_response_code(500);
         $response['status'] = 'error';
         $response['message'] = $messages['conversionFailed'] ?? 'Conversion failed.';
         echo json_encode($response);
