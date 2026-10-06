@@ -196,17 +196,15 @@ class PdfProcessing
      * @param string[] $metadataArray - additional metadata
      * @return string - the arguments
      */
-    public function createPdfaArgs($level, $mode, $lang)
+    public function createPdfaArgs($lang)
     {
         $args = [];
-
-        if (!empty($mode)) {
-            $args[] = $mode;
-        }
 
         if (!empty($_SESSION['xmpFile'])) {
             $args[] = $this->configs['metadataArg'] . $_SESSION['xmpFile'];
         }
+
+        $level = $this->configs['target_pdfa_level'];
 
         $args[] = $this->configs['pdfLevelArg'] . $level;
         $args[] = $this->configs['pdfOutputArg'] . $_SESSION['processedFile'];
@@ -233,41 +231,6 @@ class PdfProcessing
         . $this->configs['cachefolderArg'] . ' '
         . $this->configs['pdfLangArg'] . $lang . ' '
         . $_SESSION['uploadFile'];
-
-        return $args;
-    }
-
-    /**
-     * Creates the arguments for PDF profile processing.
-     *
-     * @param string $profile - the profile file name
-     * @return string - the arguments
-     */
-    public function createPdfProfileArgs($profile, $lang)
-    {
-        $args = $this->configs['pdfProfileArg'] . ' '
-            . $this->configs['pdfProfilesPath'] . escapeshellarg($profile) . ' '
-            . $_SESSION['uploadFile'] . ' ' . $this->configs['pdfOutputArg']
-            . $_SESSION['processedFile'] . ' ' . $this->configs['pdfOverwriteArg'] . ' '
-            . $this->configs['pdfLangArg'] . $lang . ' '
-            . $this->configs['cachefolderArg'];
-
-        return $args;
-    }
-
-    /**
-     * Creates the arguments for free PDF processing.
-     *
-     * @param string $args - the free args
-     * @return string - the arguments
-     */
-    public function createPdfFreeArgs($freeArgs, $lang)
-    {
-        $args = escapeshellcmd($freeArgs) . ' ' . $this->configs['pdfOutputArg']
-            . $_SESSION['processedFile'] . ' ' . $this->configs['pdfOverwriteArg'] . ' '
-            . $this->configs['cachefolderArg'] . ' '
-            . $this->configs['pdfLangArg'] . $lang . ' '
-            . $_SESSION['uploadFile'];
 
         return $args;
     }

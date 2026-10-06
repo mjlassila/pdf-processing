@@ -14,12 +14,6 @@
 /**
  * Form for the pdf processing settings.
  */
-$simplified_conversion = $configs['simplified_conversion'];
-
-if ($simplified_conversion) {
-    $messages['pdfaLevel'] = array("2b");
-    $messages['pdfaModus'] = array(" ,Vakio");
-}
 
 ?>
 <div class="container content-card">

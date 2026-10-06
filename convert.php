@@ -35,9 +35,6 @@ if (empty($_SESSION['uploadFile']) || !file_exists($_SESSION['uploadFile'])) {
     exit;
 }
 
-$level = filter_input(INPUT_POST, 'pdfa_convlevel', FILTER_SANITIZE_STRING) ?? '';
-$mode = filter_input(INPUT_POST, 'pdfa_mode', FILTER_SANITIZE_STRING) ?? '';
-
 $processor->createAndSaveProcessedFileName('.pdf');
 $processedFile = $_SESSION['processedFile'] ?? '';
 $processedDisplayName = $_SESSION['processedDisplayName'] ?? '';
@@ -57,7 +54,7 @@ $processingReturnValue = '';
 $conversionOk = false;
 
 try {
-    $args = $processor->createPdfaArgs($level, $mode, $lang);
+    $args = $processor->createPdfaArgs($lang);
     # Release the session lock before running the conversion so status requests can
     # check for the result while the processor is running.
     if (session_status() === PHP_SESSION_ACTIVE) {
