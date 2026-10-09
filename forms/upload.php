@@ -17,7 +17,7 @@
 ?>
 <div class="container content-card">
     <h1><?= $messages['headline'] ?></h1>
-    <form method="post" action="index.php" enctype="multipart/form-data">
+    <form method="post" action="/" enctype="multipart/form-data">
         <p class="mb-3"><?= $messages['introduction'] ?></p>
 
         <div class="file-upload">

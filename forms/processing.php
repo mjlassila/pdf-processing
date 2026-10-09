@@ -18,7 +18,7 @@
 ?>
 <div class="container content-card">
     <h1><?= $messages['headline'] ?></h1>
-    <form method="post" action="index.php" id="processing-form">
+    <form method="post" action="/" id="processing-form">
         <p>
             <?= $messages['uploadedFile'] ?>
             <span class="fw-bold">
