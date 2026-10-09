@@ -17,7 +17,6 @@
  */
 
 include_once("environment/init.php");
-include_once("environment/functions.php");
 
 // The handler manages the data from the http request
 include_once("environment/handler.php");
