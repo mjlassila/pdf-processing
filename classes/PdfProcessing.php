@@ -121,10 +121,10 @@ class PdfProcessing
         }
 
         $_SESSION['processedFile'] = $this->configs['processedPath']
-            . $this->addFileSuffix($_SESSION['uploadFile'], $fileExt, '_processed');
+            . $this->addFileSuffix($_SESSION['uploadFile'], $fileExt, '_pdfa');
 
         $_SESSION['processedDisplayName'] = $this->addFileSuffix($_SESSION['originalFileName'],
-            $fileExt, '_processed');
+            $fileExt, '_pdfa');
     }
 
     /**
