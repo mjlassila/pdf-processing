@@ -46,12 +46,4 @@ class SessionControl {
         unset($_SESSION['processedFile']);
         unset($_SESSION['xmpFile']);
     }
-
-    /**
-     * Destroys the session.
-     */
-    public function destroySession(): void {
-        $this->clearSession();
-        session_destroy();
-    }
 }
