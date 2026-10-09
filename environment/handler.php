@@ -39,9 +39,7 @@ if (!empty($_SESSION['uploadFile']) && !file_exists($_SESSION['uploadFile'])) {
 }
 
 // If a process button was pushed, perform processing
-if (!empty($_POST['pdfa_validate'])) {
-    $args = $processor->createPdfaValidateArgs($_POST['pdfa_level'], $lang);
-} elseif (!empty($_POST['pdfa_convert'])) {
+if (!empty($_POST['pdfa_convert'])) {
     $processor->createAndSaveProcessedFileName('.pdf');
     $metadataArray = $processor->createMetadataArray();
 
