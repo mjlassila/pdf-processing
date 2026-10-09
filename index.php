@@ -33,8 +33,8 @@ if (empty($_SESSION['uploadFile']) || !file_exists($_SESSION['uploadFile'])) {
 }
 
 // If there are arguments of a processing return value, show them
-if (!empty($processingReturnValue) || !empty($args)) {
-    include_once("elements/info.php");
-}
+//if (!empty($processingReturnValue) || !empty($args)) {
+//    include_once("elements/info.php");
+//}
 
 include_once("elements/footer.php");
