@@ -169,18 +169,9 @@ async function convertFile(metadata, successText, failedText) {
     }
 
     const data = await response.json();
-
-    // TODO: could PHP process be changed so that in case of error the status of response would be in range 5**?
-    if (data.status === 'success' || data.status === 'error') {
-      handleFinalStatus(data, successText, failedText);
-    }
+    handleFinalStatus(data, successText, failedText);
   }
   catch (error) {
-    // TODO: this is here only for testing purposes, remove before making the application public
-    if (error.name === 'TimeoutError') {
-      console.warn('TIMEOUT ERROR');
-    }
-    // TODO: currently this branch is only visited in errors originating in JS code, fetch errors other than timeout do not come here ever
     handleFinalStatus({ status: 'error', message: failedText }, successText, failedText);
   }
   finally {
