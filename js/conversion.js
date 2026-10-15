@@ -137,8 +137,8 @@ function createSpinner() {
   const spinner = document.createElement('span');
   spinner.classList.add('spinner-border', 'spinner-border-sm');
   spinner.setAttribute('aria-hidden', true);
+
   const accessibilityMessage = document.createElement('span');
-  // TODO: it should be considered if the content of this message could be improved
   accessibilityMessage.textContent = convertButton.dataset.inProgress;
   accessibilityMessage.setAttribute('role', 'status');
   accessibilityMessage.classList.add('spinner-message', 'visually-hidden');
