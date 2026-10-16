@@ -137,8 +137,8 @@ function createSpinner() {
   const spinner = document.createElement('span');
   spinner.classList.add('spinner-border', 'spinner-border-sm');
   spinner.setAttribute('aria-hidden', true);
+
   const accessibilityMessage = document.createElement('span');
-  // TODO: it should be considered if the content of this message could be improved
   accessibilityMessage.textContent = convertButton.dataset.inProgress;
   accessibilityMessage.setAttribute('role', 'status');
   accessibilityMessage.classList.add('spinner-message', 'visually-hidden');
@@ -169,18 +169,9 @@ async function convertFile(metadata, successText, failedText) {
     }
 
     const data = await response.json();
-
-    // TODO: could PHP process be changed so that in case of error the status of response would be in range 5**?
-    if (data.status === 'success' || data.status === 'error') {
-      handleFinalStatus(data, successText, failedText);
-    }
+    handleFinalStatus(data, successText, failedText);
   }
   catch (error) {
-    // TODO: this is here only for testing purposes, remove before making the application public
-    if (error.name === 'TimeoutError') {
-      console.warn('TIMEOUT ERROR');
-    }
-    // TODO: currently this branch is only visited in errors originating in JS code, fetch errors other than timeout do not come here ever
     handleFinalStatus({ status: 'error', message: failedText }, successText, failedText);
   }
   finally {
@@ -200,9 +191,6 @@ function startFileConversion() {
   const failedText = statusContainer.dataset.failed;
 
   const formData = new FormData(form);
-
-  // TODO: should this be moved to configs?
-  formData.set('pdfa_convert', '1');
 
   convertButton.disabled = true;
   setStatus('info', inProgressText, true);
@@ -315,5 +303,18 @@ document.getElementById('description')?.addEventListener('input', (event) => {
   const textArea = event.target;
   const counter = textArea.nextElementSibling;
   const maxLength = textArea.maxLength;
-  counter.textContent = `${textArea.textLength}/${maxLength}`;
+  const usedChars = textArea.textLength;
+  counter.textContent = `${usedChars}/${maxLength}`;
+
+  const remaining = maxLength - usedChars;
+  const remainingCharsHelp = document.getElementById('remaining-chars-help');
+
+  const milestones = [1000, 500, 250, 100, 50, 10, 0];
+
+  if (milestones.includes(remaining)) {
+    remainingCharsHelp.textContent = `${remaining} ${textArea.dataset.charsRemaining}`;
+  }
+  else {
+    remainingCharsHelp.textContent = "";
+  }
 });

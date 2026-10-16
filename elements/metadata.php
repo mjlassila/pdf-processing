@@ -34,8 +34,14 @@
                     type="text"
                     class="form-control"
                     maxlength="<?= $configs['descriptionMaxLenght'] ?>"
+                    aria-describedby="description-help"
+                    data-chars-remaining="<?= $messages['charsRemaining'] ?>"
                     rows="3"></textarea>
                 <p class="char-counter">0/2000</p>
+                <p id="description-help" class="visually-hidden">
+                    <?= $messages['descriptionHelp'] ?> <?= $configs['descriptionMaxLenght'] ?> <?= $messages['characters'] ?>
+                </p>
+                <p id="remaining-chars-help" class="visually-hidden" aria-live="polite" aria-atomic="true"></p>
             <?php endif; ?>
         </div>
     </div>
