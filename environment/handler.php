@@ -17,16 +17,39 @@
 
 // If there is a file upload, save it and set the session variables
 if (!empty($_FILES)) {
-    if (empty($_FILES['fileToUpload']['name'])) {
-        $infoMessage = $messages['fileNotChosen'];
-    } elseif ($_FILES['fileToUpload']['size'] > $configs['max_filesize_in_mb'] * 1024 * 1024) { // converted to bytes
+    $file = $_FILES['fileToUpload'] ?? null;
+
+    if (!$file || !isset($file['error']) || is_array($file['error'])) {
+        http_response_code(400);
+        $errorMessage = $messages['uploadNoPdf'];
+    } elseif (
+        $file['error'] === UPLOAD_ERR_INI_SIZE ||
+        $file['error'] === UPLOAD_ERR_FORM_SIZE
+    ) {
+        http_response_code(413);
         $errorMessage = $messages['fileTooLarge'];
-    } elseif (pathinfo($_FILES['fileToUpload']['name'], PATHINFO_EXTENSION) != 'pdf' || mime_content_type($_FILES['fileToUpload']['tmp_name']) != 'application/pdf') {
+    } elseif ($file['error'] === UPLOAD_ERR_NO_FILE) {
+        $infoMessage = $messages['fileNotChosen'];
+    } elseif ($file['error'] !== UPLOAD_ERR_OK) {
+        http_response_code(
+            $file['error'] === UPLOAD_ERR_PARTIAL ? 400 : 500
+        );
+        $errorMessage = $messages['fileNotSaved'];
+    } elseif ($file['size'] > $configs['max_filesize_in_mb'] * 1024 * 1024) {
+        http_response_code(413);
+        $errorMessage = $messages['fileTooLarge'];
+    } elseif (
+        pathinfo($file['name'], PATHINFO_EXTENSION) !== 'pdf' ||
+        mime_content_type($file['tmp_name']) !== 'application/pdf'
+    ) {
         $errorMessage = $messages['uploadNoPdf'];
     } else {
-        $newFileName =  $processor->renameFile(basename($_FILES['fileToUpload']['name']), '.pdf');
+        $newFileName = $processor->renameFile(
+            basename($file['name']),
+            '.pdf'
+        );
 
-        if (!$processor->saveFile($_FILES['fileToUpload'], $newFileName)) {
+        if (!$processor->saveFile($file, $newFileName)) {
             $errorMessage = $messages['fileNotSaved'];
         }
     }
@@ -39,7 +62,7 @@ if (!empty($_SESSION['uploadFile']) && !file_exists($_SESSION['uploadFile'])) {
 }
 
 // If a process button was pushed, perform processing
-if (!empty($_POST['pdfa_convert'])) {
+if (!empty($_POST)) {
     $processor->createAndSaveProcessedFileName('.pdf');
     $metadataArray = $processor->createMetadataArray();
 
