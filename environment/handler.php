@@ -39,7 +39,7 @@ if (!empty($_SESSION['uploadFile']) && !file_exists($_SESSION['uploadFile'])) {
 }
 
 // If a process button was pushed, perform processing
-if (!empty($_POST['pdfa_convert'])) {
+if (!empty($_POST)) {
     $processor->createAndSaveProcessedFileName('.pdf');
     $metadataArray = $processor->createMetadataArray();
 

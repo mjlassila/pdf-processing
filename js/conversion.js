@@ -192,9 +192,6 @@ function startFileConversion() {
 
   const formData = new FormData(form);
 
-  // TODO: should this be moved to configs?
-  formData.set('pdfa_convert', '1');
-
   convertButton.disabled = true;
   setStatus('info', inProgressText, true);
   toggleElementHidden(conversionInfoContainer, false);
